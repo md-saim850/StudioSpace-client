@@ -40,6 +40,12 @@ const categoriesData: Category[] = [
     count: '14+ studios',
     image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop',
   },
+  {
+    id: '6',
+    name: 'Art Workshops',
+    count: '14+ studios',
+    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop',
+  },
 ];
 
 export default function BrowseCategories() {
@@ -64,7 +70,7 @@ export default function BrowseCategories() {
       </div>
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
         {categoriesData.map((category) => (
           <a
             key={category.id}

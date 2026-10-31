@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Camera, Search, Menu, X } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,28 +24,22 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#home" className="text-sm font-semibold text-gray-900 hover:text-black transition-colors">
+            <Link href="/" className="text-sm font-semibold text-gray-900 hover:text-black transition-colors">
               Home
-            </a>
-            <a href="#explore" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
+            </Link>
+            <Link href="#" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
               Explore Studios
-            </a>
-            <a href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
+            </Link>
+            <Link href="#" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
               How It Works
-            </a>
-            <a href="#about" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
+            </Link>
+            <Link href="#" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
               About Us
-            </a>
+            </Link>
           </nav>
 
           {/* Right Action Items */}
           <div className="hidden md:flex items-center gap-4">
-            <button 
-              aria-label="Search"
-              className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all"
-            >
-              <Search className="w-5 h-5" />
-            </button>
             <button className="px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black border border-gray-300 hover:border-gray-400 rounded-lg transition-all">
               Login
             </button>
