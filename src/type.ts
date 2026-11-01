@@ -14,4 +14,6 @@ export interface StudioType {
   ownerEmail?: string;
   rating?: number;
   reviewCount?: number;
+  dateTime?:string
+  status?:string
 }

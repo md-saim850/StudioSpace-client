@@ -11,6 +11,7 @@ const getStudios = async (): Promise<StudioType[]> => {
     if (!res.ok) {
       throw new Error("Failed to fetch studios");
     }
+
     const studios: StudioType[] = await res.json();
 
     return studios;

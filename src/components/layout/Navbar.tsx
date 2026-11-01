@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Camera, Menu, X } from 'lucide-react';
+import { Camera, Loader2, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -43,22 +43,26 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Items */}
-          {session?.user ?(
-            <Link href={'/dashboard'}>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </Link>
+          {session ? (
+            session?.user ?(
+              <Link href={'/dashboard/my-booking'}>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </Link>
+            ):(
+              <div className="hidden md:flex items-center gap-4">
+                <Link href="sign-in" className="px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black border border-gray-300 hover:border-gray-400 rounded-lg transition-all">
+                  Login
+                </Link>
+                <Link href="sign-up" className="px-5 py-2.5 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-lg shadow-sm transition-all">
+                  Register
+                </Link>
+              </div>
+            )
           ):(
-            <div className="hidden md:flex items-center gap-4">
-              <Link href="sign-in" className="px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black border border-gray-300 hover:border-gray-400 rounded-lg transition-all">
-                Login
-              </Link>
-              <Link href="sign-up" className="px-5 py-2.5 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-lg shadow-sm transition-all">
-                Register
-              </Link>
-            </div>
+            <Loader2 size={16} className="animate-spin" />
           )}
 
           {/* Mobile Menu Button */}
@@ -91,7 +95,7 @@ export default function Navbar() {
 
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-2">
             {session?.user ?(
-              <Link href={'/dashboard'}>
+              <Link href={'/dashboard/my-booking'}>
                 <Avatar>
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>CN</AvatarFallback>

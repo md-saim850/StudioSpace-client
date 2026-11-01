@@ -1,3 +1,6 @@
+
+'use client'
+
 import React, { useState } from 'react';
 import { Plus, Eye, Calendar, DollarSign } from 'lucide-react';
 import Image from 'next/image';

@@ -9,11 +9,9 @@ interface Props {
 
 async function getStudio(id: string): Promise<StudioType | null> {
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
-      cache: "no-store" 
-    }
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
+    cache: "no-store" 
+  });
 
   if (res.status === 404) return null;
 

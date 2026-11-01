@@ -58,8 +58,7 @@ export default function ImageSlider() {
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
               <Image  
-                width={500}
-                height={350}
+                fill
                 src={slide.image}
                 alt={slide.title}
                 className="w-full h-full object-cover grayscale contrast-105"
