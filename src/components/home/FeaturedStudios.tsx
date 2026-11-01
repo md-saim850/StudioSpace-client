@@ -1,19 +1,9 @@
+import type{ Studio } from '@/type';
 import { Star, MapPin, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface Studio {
-  id: string;
-  title: string;
-  category: string;
-  image: string;
-  rating: number;
-  reviewsCount: number;
-  pricePerHour: number;
-  location: string;
-}
-
-const studiosData: Studio[] = [
+export const studiosData: Studio[] = [
   {
     id: '1',
     title: 'The Ivory Cyc Studio',

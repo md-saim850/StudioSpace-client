@@ -14,6 +14,8 @@ import Image from 'next/image';
 import MyBookings from './MyBooking';
 import MyStudioListings from './MyStudioListing';
 import AddNewStudio from './AddNewStudio';
+import { authClient } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
 
 export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState('My Bookings');
@@ -26,6 +28,12 @@ export default function UserDashboard() {
     { name: 'Favorites', icon: Heart },
     { name: 'Profile Settings', icon: Settings },
   ];
+
+  
+  const handleSignOut = async() =>{
+    await authClient.signOut();
+    redirect('/sign-in');
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
@@ -103,6 +111,7 @@ export default function UserDashboard() {
         {/* Logout Button */}
         <div className="pt-6 border-t border-gray-100 mt-6">
           <button
+            onClick={handleSignOut}
             type="button"
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
           >

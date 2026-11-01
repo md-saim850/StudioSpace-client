@@ -1,16 +1,18 @@
-
 import { notFound } from "next/navigation";
-import StudioDetails, { Studio } from "./StudioDetails";
+import StudioDetails from "./StudioDetails";
+import { StudioType } from "@/type";
+
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-async function getStudio(id: string): Promise<Studio | null> {
+async function getStudio(id: string): Promise<StudioType | null> {
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,
-    { cache: "no-store" }
+    `${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
+      cache: "no-store" 
+    }
   );
 
   if (res.status === 404) return null;
@@ -20,13 +22,10 @@ async function getStudio(id: string): Promise<Studio | null> {
   }
 
   const data = await res.json();
-
-  return data.studio;
+  return data;
 }
 
-export default async function StudioDetailsPage({
-  params,
-}: Props) {
+export default async function StudioDetailsPage({params}: Props) {
   const { id } = await params;
 
   const studio = await getStudio(id);

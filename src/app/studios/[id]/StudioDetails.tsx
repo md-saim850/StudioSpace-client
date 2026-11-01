@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -14,26 +13,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
-export interface Studio {
-  _id: string;
-  title: string;
-  category: string;
-  hourlyRate: number;
-  securityDeposit: number;
-  maxCapacity: number;
-  location: string;
-  image: string;
-  amenities: string[];
-  overview: string;
-  ownerName?: string;
-  ownerEmail?: string;
-  rating?: number;
-  reviewCount?: number;
-}
+import type{ StudioType } from "@/type";
+import { toast } from "sonner";
 
 interface StudioDetailsProps {
-  studio: Studio;
+  studio: StudioType;
+
   onBook?: (booking: {
     studioId: string;
     date: string;
@@ -43,10 +28,7 @@ interface StudioDetailsProps {
   }) => void | Promise<void>;
 }
 
-export default function StudioDetails({
-  studio,
-  onBook,
-}: StudioDetailsProps) {
+export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [booking, setBooking] = useState(false);
@@ -58,15 +40,13 @@ export default function StudioDetails({
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  const handleBooking = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!date || !time) return;
 
     if (!onBook) {
-      alert("Booking API is not connected yet.");
+      toast.error("Booking API is not connected yet.");
       return;
     }
 
@@ -92,10 +72,7 @@ export default function StudioDetails({
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
         {/* Back Button */}
-        <Link
-          href="/studios"
-          className="mb-5 inline-flex items-center gap-2 text-xs font-semibold text-gray-600 transition hover:text-black"
-        >
+        <Link href="/studios" className="mb-5 inline-flex items-center gap-2 text-xs font-semibold text-gray-600 transition hover:text-black">
           <ArrowLeft size={15} />
           Back to results
         </Link>
@@ -103,11 +80,12 @@ export default function StudioDetails({
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.65fr_0.9fr]">
 
           {/* LEFT: Studio Information */}
-          <section className="min-w-0 space-y-7">
+          <section className="min-w-0 space-y-7 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
 
             {/* Main Studio Image */}
             <div className="relative h-[260px] overflow-hidden rounded-2xl border border-gray-100 bg-gray-100 sm:h-[400px]">
               <Image
+                fill
                 src={studio.image}
                 alt={studio.title}
                 className="h-full w-full object-cover"

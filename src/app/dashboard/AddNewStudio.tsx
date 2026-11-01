@@ -49,19 +49,7 @@ export default function AddNewStudio() {
 
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    hourlyRate: "",
-    securityDeposit: "",
-    maxCapacity: "",
-    location: "",
-    image: "",
-    amenities: [] as string[],
-    overview: "",
-  });
-
-  const updateField = (field: string, value: string) => {
+  const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -72,93 +60,62 @@ export default function AddNewStudio() {
     setFormData((prev) => ({
       ...prev,
       amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter((item) => item !== amenity)
-        : [...prev.amenities, amenity],
+      ?
+      prev.amenities.filter((item) => item !== amenity)
+      : 
+      [...prev.amenities, amenity],
+
     }));
   };
 
-  const inputClass =
-    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100";
+  const inputClass = "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100";
+  const labelClass = "mb-2 block text-sm font-semibold text-gray-700";
 
-  const labelClass =
-    "mb-2 block text-sm font-semibold text-gray-700";
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  // const handleSubmit = async (
-  //   e: React.FormEvent<HTMLFormElement>
-  // ) => {
-  //   e.preventDefault();
+    try {
+      setLoading(true);
 
-  //   if (!session?.user) {
-  //     toast.error("Please sign in to add a studio.");
-  //     return;
-  //   }
+      const formData = new FormData(e.target());
+      const data = Object.entries(formData.entries());
 
-  //   if (Number(formData.hourlyRate) <= 0 ||
-  //       Number(formData.maxCapacity) <= 0 ||
-  //       Number(formData.securityDeposit) < 0) {
-  //     toast.error("Please enter valid prices and capacity.");
-  //     return;
-  //   }
+      // Get Better Auth JWT token
+      // const { data, error } = await authClient.token();
 
-  //   try {
-  //     setLoading(true);
+      // if (error || !data?.token) {
+      //   toast.error("Authentication failed. Please sign in again.");
+      //   return;
+      // }
 
-  //     // Get Better Auth JWT token
-  //     // const { data, error } = await authClient.token();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-studio`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${data.token}`,
+          },
+          body: JSON.stringify({...data,}),
+        }
+      );
+      const result = await res.json();
 
-  //     if (error || !data?.token) {
-  //       toast.error("Authentication failed. Please sign in again.");
-  //       return;
-  //     }
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to create studio.");
+      }
 
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/studios`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${data.token}`,
-  //         },
-  //         body: JSON.stringify({
-  //           ...formData,
-  //           hourlyRate: Number(formData.hourlyRate),
-  //           securityDeposit: Number(formData.securityDeposit),
-  //           maxCapacity: Number(formData.maxCapacity),
-  //         }),
-  //       }
-  //     );
+      toast.success("Studio created successfully!");
 
-  //     const result = await response.json();
+      router.refresh();
+      router.push("/dashboard");
 
-  //     if (!response.ok) {
-  //       throw new Error(result.message || "Failed to create studio.");
-  //     }
+    } catch (error) {
+      console.error("Studio creation error:", error);
+      toast.error(error instanceof Error? error.message: "Something went wrong.");
 
-  //     toast.success("Studio created successfully!");
-
-  //     router.push("/my-listings");
-  //     router.refresh();
-
-  //   } catch (error) {
-  //     console.error("Studio creation error:", error);
-
-  //     toast.error(
-  //       error instanceof Error
-  //         ? error.message
-  //         : "Something went wrong."
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // if (isPending) {
-  //   return (
-  //     <div className="flex justify-center py-20">
-  //       <Loader2 className="animate-spin text-gray-500" />
-  //     </div>
-  //   );
-  // }
+    }finally{
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -181,7 +138,7 @@ export default function AddNewStudio() {
       </div>
 
       <form
-        // onSubmit={handleSubmit}
+        onSubmit={handleSubmit}
         className="rounded-2xl border border-gray-100 bg-white shadow-sm"
       >
 
@@ -200,6 +157,7 @@ export default function AddNewStudio() {
                 <input
                   type="text"
                   // value={session?.user?.name || ""}
+                  value={"Md. Saim"}
                   readOnly
                   className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
                 />
@@ -209,7 +167,7 @@ export default function AddNewStudio() {
                 <label className={labelClass}>Owner Email</label>
                 <input
                   type="email"
-                  // value={session?.user?.email || ""}
+                  value={"sayeemahmed850@gmail.com"}
                   readOnly
                   className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
                 />
@@ -235,9 +193,7 @@ export default function AddNewStudio() {
                   type="text"
                   placeholder="e.g. The Ivory Cyc Studio"
                   value={formData.title}
-                  onChange={(e) =>
-                    updateField("title", e.target.value)
-                  }
+                  onChange={(e) =>handleChange("title", e.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -247,17 +203,13 @@ export default function AddNewStudio() {
                 <select
                   required
                   value={formData.category}
-                  onChange={(e) =>
-                    updateField("category", e.target.value)
-                  }
+                  onChange={(e) =>handleChange("category", e.target.value)}
                   className={inputClass}
                 >
                   <option value="">Select studio category</option>
 
                   {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
+                    <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
               </div>
@@ -278,9 +230,7 @@ export default function AddNewStudio() {
                     min="1"
                     placeholder="e.g. 50"
                     value={formData.hourlyRate}
-                    onChange={(e) =>
-                      updateField("hourlyRate", e.target.value)
-                    }
+                    onChange={(e) => handleChange("hourlyRate", e.target.value)}
                     className={inputClass}
                   />
                 </div>
@@ -299,9 +249,7 @@ export default function AddNewStudio() {
                     min="0"
                     placeholder="e.g. 100"
                     value={formData.securityDeposit}
-                    onChange={(e) =>
-                      updateField("securityDeposit", e.target.value)
-                    }
+                    onChange={(e) =>handleChange("securityDeposit", e.target.value)}
                     className={inputClass}
                   />
                 </div>
@@ -322,9 +270,7 @@ export default function AddNewStudio() {
                   min="1"
                   placeholder="Maximum number of people"
                   value={formData.maxCapacity}
-                  onChange={(e) =>
-                    updateField("maxCapacity", e.target.value)
-                  }
+                  onChange={(e) =>handleChange("maxCapacity", e.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -342,9 +288,7 @@ export default function AddNewStudio() {
                   type="text"
                   placeholder="Street address, city, state"
                   value={formData.location}
-                  onChange={(e) =>
-                    updateField("location", e.target.value)
-                  }
+                  onChange={(e) =>handleChange("location", e.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -367,9 +311,7 @@ export default function AddNewStudio() {
               type="url"
               placeholder="https://example.com/studio.jpg"
               value={formData.image}
-              onChange={(e) =>
-                updateField("image", e.target.value)
-              }
+              onChange={(e) =>handleChange("image", e.target.value)}
               className={inputClass}
             />
 
@@ -381,9 +323,6 @@ export default function AddNewStudio() {
                   fill
                   unoptimized
                   className="object-cover"
-                  onError={() => {
-                    // Invalid URLs will not show a valid preview.
-                  }}
                 />
               </div>
             )}
@@ -404,8 +343,7 @@ export default function AddNewStudio() {
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
 
               {amenitiesList.map((amenity) => {
-                const selected =
-                  formData.amenities.includes(amenity);
+                const selected = formData.amenities.includes(amenity);
 
                 return (
                   <button
@@ -447,9 +385,7 @@ export default function AddNewStudio() {
               rows={6}
               placeholder="Describe your studio, its atmosphere, facilities, equipment and what makes it special..."
               value={formData.overview}
-              onChange={(e) =>
-                updateField("overview", e.target.value)
-              }
+              onChange={(e) => handleChange("overview", e.target.value)}
               className={`${inputClass} resize-none`}
             />
           </section>
@@ -484,6 +420,7 @@ export default function AddNewStudio() {
         </div>
 
       </form>
+
     </div>
   );
 }
