@@ -10,7 +10,7 @@ const getStudios = async (): Promise<StudioType[]> => {
     headers: await headers(),
   })
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios?limit=8`,{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios?limit=6`,{
         cache: "no-store",
         headers:{
           "Authorization":`Bearer ${jwtToken?.token}`
@@ -50,7 +50,7 @@ export default async function FeaturedStudios() {
         </div>
 
         <Link
-          href="#all-studios"
+          href="/studios"
           className="inline-flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black transition-colors dark:text-gray-300 dark:hover:text-white"
         >
           View All <ArrowRight className="w-4 h-4" />
@@ -58,7 +58,7 @@ export default async function FeaturedStudios() {
       </div>
 
       {/* Studios Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3   gap-5">
         {studiosData.map((studio, index:number) => (
           <StudiosCard key={index} studio={studio} index={index}/>
         ))}

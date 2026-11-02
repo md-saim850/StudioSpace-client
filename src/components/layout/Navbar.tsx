@@ -3,14 +3,10 @@
 import { useState } from 'react';
 import { Camera, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { authClient } from '@/lib/auth-client';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import ThemeToggle from './ThemeToggle';
+import Auth from './Auth';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const{data:session} = authClient.useSession();
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100  dark:bg-gray-950 transition-colors duration-300">
@@ -35,7 +31,7 @@ export default function Navbar() {
             <Link href="/studios" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors dark:text-gray-300 dark:hover:text-white">
               Explore Studios
             </Link>
-            <Link href="/#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors dark:text-gray-300 dark:hover:text-white">
+            <Link href="/how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors dark:text-gray-300 dark:hover:text-white">
               How It Works
             </Link>
             <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors dark:text-gray-300 dark:hover:text-white">
@@ -44,28 +40,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Items */}
-          {session?.user ?(
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
-              <Link href={'/dashboard/my-booking'}>
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
-            ):(
-              <div className="hidden md:flex items-center gap-4">
-                <ThemeToggle />
-
-                <Link href="sign-in" className="px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black border border-gray-300 hover:border-gray-400 rounded-lg transition-all dark:text-gray-200 dark:border-gray-700 dark:hover:text-white dark:hover:border-gray-500">
-                  Login
-                </Link>
-                <Link href="sign-up" className="px-5 py-2.5 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-lg shadow-sm transition-all dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                  Register
-                </Link>
-              </div>
-            )}
+          <Auth />
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
@@ -88,7 +63,7 @@ export default function Navbar() {
           <Link href="/studios" className="block py-2 text-base font-medium text-gray-600 dark:text-gray-300">
             Explore Studios
           </Link>
-          <Link href="/#how-it-works" className="block py-2 text-base font-medium text-gray-600 dark:text-gray-300">
+          <Link href="/how-it-works" className="block py-2 text-base font-medium text-gray-600 dark:text-gray-300">
             How It Works
           </Link>
           <Link href="/about" className="block py-2 text-base font-medium text-gray-600 dark:text-gray-300">
@@ -96,28 +71,7 @@ export default function Navbar() {
           </Link>
 
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-2 dark:border-gray-800">
-            {session?.user ?(
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-                <Link href={'/dashboard/my-booking'}>
-                  <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </Link>
-              </div>
-              ):(
-                <div className="hidden md:flex items-center gap-4">
-                  <ThemeToggle />
-
-                  <Link href="sign-in" className="px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black border border-gray-300 hover:border-gray-400 rounded-lg transition-all dark:text-gray-200 dark:border-gray-700 dark:hover:text-white dark:hover:border-gray-500">
-                    Login
-                  </Link>
-                  <Link href="sign-up" className="px-5 py-2.5 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-lg shadow-sm transition-all dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                    Register
-                  </Link>
-                </div>
-              )}
+            <Auth />
           </div>
 
         </div>

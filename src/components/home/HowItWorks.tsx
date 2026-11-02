@@ -80,7 +80,7 @@ const featuresData: Feature[] = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-24 py-20">
+    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-24 py-20">
       {/* Top Section: Header & 4 Steps */}
       <div className="mb-10">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-white">

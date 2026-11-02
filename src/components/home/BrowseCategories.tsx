@@ -47,12 +47,12 @@ export default async function BrowseCategories() {
             Find the perfect space for your creative vision
           </p>
         </div>
-        <a
-          href="#categories"
+        <Link
+          href="/studios"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-black transition-colors dark:text-gray-300 dark:hover:text-white"
         >
           View All <ArrowRight className="w-4 h-4" />
-        </a>
+        </Link>
       </div>
 
       {/* Categories Grid */}
