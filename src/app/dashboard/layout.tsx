@@ -69,13 +69,6 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
           <div>
             {/* User Profile Header (Desktop) */}
             <div className="hidden md:flex items-center gap-3 mb-8">
-                <Image
-                  width={10}
-                  height={10}
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"
-                  alt="Sayeem Ahmad"
-                  className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm dark:border-gray-800"
-                />
               <div className="overflow-hidden">
                 <h4 className="font-bold text-sm text-gray-900 truncate dark:text-white">Sayeem Ahmad</h4>
                 <p className="text-xs text-gray-500 truncate dark:text-gray-400">sayeem@gmail.com</p>
