@@ -8,13 +8,13 @@ const stats = [
 
 export default function AboutStats() {
   return (
-    <section className="bg-gray-100 py-20 px-5">
+    <section className="bg-gray-100 py-20 px-5 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-black">
+          <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white">
             Our Impact
           </h2>
-          <p className="text-gray-500 mt-3">
+          <p className="text-gray-500 mt-3 dark:text-gray-400">
             Bringing creative ideas and spaces together.
           </p>
         </div>
@@ -22,10 +22,10 @@ export default function AboutStats() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
-              <h3 className="text-4xl md:text-5xl font-bold text-black">
+              <h3 className="text-4xl md:text-5xl font-bold text-black dark:text-white">
                 {stat.number}
               </h3>
-              <p className="text-gray-500 mt-3">{stat.label}</p>
+              <p className="text-gray-500 mt-3 dark:text-gray-400">{stat.label}</p>
             </div>
           ))}
         </div>

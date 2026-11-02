@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function AboutHero() {
   return (
-    <section className="bg-black text-white py-24 px-5">
+    <section className="bg-black text-white py-24 px-5 dark:bg-gray-900 dark:border-b dark:border-gray-800">
       <div className="max-w-7xl mx-auto text-center">
         <span className="text-sm uppercase tracking-[0.3em] text-gray-400">
           About StudioSpace

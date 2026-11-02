@@ -2,11 +2,19 @@ import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { CategoryType } from '@/type';
 import Link from 'next/link';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 const getCategory = async (): Promise<CategoryType[]> => {
+  const jwtToken = await auth.api.getToken({
+    headers: await headers(),
+  })
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category?limit=6`,{
         cache: "no-store",
+        headers:{
+          "Authorization": `Bearer ${jwtToken?.token}`
+        }
       }
     );
 
@@ -32,16 +40,16 @@ export default async function BrowseCategories() {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-white">
             Browse by Studio Categories
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
             Find the perfect space for your creative vision
           </p>
         </div>
         <a
           href="#categories"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-black transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-black transition-colors dark:text-gray-300 dark:hover:text-white"
         >
           View All <ArrowRight className="w-4 h-4" />
         </a>
@@ -52,8 +60,7 @@ export default async function BrowseCategories() {
         {categoriesData.map((category, indx:number) => (
           <Link
             key={indx}
-            href={"#"}
-            // href={`#${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+            href={`/studios?category=${category.name.toLowerCase().replace(/\s+/g, "-")}`}
             className="group relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300 block"
           >
             {/* Background Image with Zoom Effect */}

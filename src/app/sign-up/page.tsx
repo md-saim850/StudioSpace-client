@@ -73,24 +73,24 @@ export default function SignUpPage() {
   }
   return (
     <main className="min-h-screen flex items-center justify-center px-5 py-12">
-      <div className="w-full max-w-md bg-gray-50 p-5 rounded-2xl border border-gray-200 shadow-2xs">
+      <div className="w-full max-w-md bg-gray-50 p-5 rounded-2xl border border-gray-200 shadow-2xs dark:bg-gray-900 dark:border-gray-800">
 
         {/*Brand Logo */}
         <div className="flex items-center justify-end gap-2 mb-8">
-          <div className="bg-black text-white p-2 rounded-full flex items-center justify-center shadow-md">
+          <div className="bg-black text-white p-2 rounded-full flex items-center justify-center shadow-md dark:bg-white dark:text-black">
             <Camera className="w-3 h-3 stroke-[1.5]" />
           </div>
-          <span className="font-bold text-sm tracking-tight text-gray-950 font-sans">
+          <span className="font-bold text-sm tracking-tight text-gray-950 font-sans dark:text-white">
             StudioSpace
           </span>
         </div>
 
         {/* Heading */}
         <div className="text-center mb-9">
-          <h1 className="text-3xl font-bold text-black tracking-tight">
+          <h1 className="text-3xl font-bold text-black tracking-tight dark:text-white">
             Create Account
           </h1>
-          <p className="text-gray-500 mt-2 text-sm">
+          <p className="text-gray-500 mt-2 text-sm dark:text-gray-400">
             Join StudioSpace and start creating today.
           </p>
         </div>
@@ -100,74 +100,74 @@ export default function SignUpPage() {
         className="space-y-4">
 
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">
+            <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
               Full Name
             </label>
             <div className="relative">
-              <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 name="name"
                 placeholder="Your full name"
                 required
-                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition"
+                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">
+            <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
               Email Address
             </label>
             <div className="relative">
-              <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="email"
                 name="email"
                 placeholder="name@example.com"
                 required
-                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition"
+                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">
+            <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
               Password
             </label>
             <div className="relative">
-              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="password"
                 name="password"
                 placeholder="Create a password"
                 required
                 minLength={8}
-                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition"
+                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">
+            <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
               Confirm Password
             </label>
             <div className="relative">
-              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="password"
                 name="confirm_password"
                 placeholder="Confirm password"
                 required
                 minLength={8}
-                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition"
+                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
           </div>
 
           <div className="">
             {error && (
-              <p className="bg-red-100 p-2 rounded-md text-red-500 text-xs mt-1.5">
+              <p className="bg-red-100 p-2 rounded-md text-red-500 text-xs mt-1.5 dark:bg-red-950/40 dark:text-red-400">
                 {error}
               </p>
             )}
@@ -175,7 +175,7 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2"
+            className="w-full bg-black text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 dark:bg-white dark:text-black dark:hover:bg-gray-200"
           >
             Create Account <ArrowRight size={17} />
           </button>
@@ -183,15 +183,15 @@ export default function SignUpPage() {
 
         {/* Divider */}
         <div className="relative flex items-center my-7">
-          <div className="flex-grow border-t border-gray-200" />
-          <span className="px-4 text-xs text-gray-400">OR SIGN UP WITH</span>
-          <div className="flex-grow border-t border-gray-200" />
+          <div className="flex-grow border-t border-gray-200 dark:border-gray-700" />
+          <span className="px-4 text-xs text-gray-400 dark:text-gray-500">OR SIGN UP WITH</span>
+          <div className="flex-grow border-t border-gray-200 dark:border-gray-700" />
         </div>
 
         {/* Google Button */}
         <button
           type="button"
-          className="w-full border border-gray-200 rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold text-black hover:bg-gray-50 transition"
+          className="w-full border border-gray-200 rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold text-black hover:bg-gray-50 transition dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
         >
           <svg viewBox="0 0 48 48" className="w-5 h-5" aria-hidden="true">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -203,14 +203,14 @@ export default function SignUpPage() {
         </button>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-sm text-gray-500 mt-8 dark:text-gray-400">
           Already have an account?{" "}
-          <Link href="/sign-in" className="font-bold text-black hover:underline">
+          <Link href="/sign-in" className="font-bold text-black hover:underline dark:text-white">
             Sign in
           </Link>
         </p>
 
-        <p className="text-center text-xs text-gray-400 mt-10">
+        <p className="text-center text-xs text-gray-400 mt-10 dark:text-gray-500">
           © 2026 StudioSpace. All rights reserved.
         </p>
       </div>

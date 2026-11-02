@@ -35,9 +35,9 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
   }
   return (
     <div>
-      <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row dark:bg-gray-950">
         {/* Mobile Top Navbar Bar */}
-        <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <Image
               width={10}
@@ -47,14 +47,14 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
               className="w-9 h-9 rounded-full object-cover"
             />
             <div>
-              <h4 className="font-semibold text-sm text-gray-900">Sayeem Ahmad</h4>
-              <p className="text-xs text-gray-500">sayeem@gmail.com</p>
+              <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Sayeem Ahmad</h4>
+              <p className="text-xs text-gray-500 dark:text-gray-400">sayeem@gmail.com</p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-gray-600 hover:text-black focus:outline-none"
+            className="p-2 text-gray-600 hover:text-black focus:outline-none dark:text-gray-400 dark:hover:text-white"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -64,7 +64,7 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
         <aside
           className={`${
             isMobileMenuOpen ? 'block' : 'hidden'
-          } md:block w-full md:w-64 bg-white border-r border-gray-200 p-6 flex-shrink-0 flex flex-col justify-between`}
+          } md:block w-full md:w-64 bg-white border-r border-gray-200 p-6 flex-shrink-0 flex flex-col justify-between dark:bg-gray-900 dark:border-gray-800`}
         >
           <div>
             {/* User Profile Header (Desktop) */}
@@ -74,11 +74,11 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
                   height={10}
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"
                   alt="Sayeem Ahmad"
-                  className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm"
+                  className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm dark:border-gray-800"
                 />
               <div className="overflow-hidden">
-                <h4 className="font-bold text-sm text-gray-900 truncate">Sayeem Ahmad</h4>
-                <p className="text-xs text-gray-500 truncate">sayeem@gmail.com</p>
+                <h4 className="font-bold text-sm text-gray-900 truncate dark:text-white">Sayeem Ahmad</h4>
+                <p className="text-xs text-gray-500 truncate dark:text-gray-400">sayeem@gmail.com</p>
               </div>
             </div>
 
@@ -98,11 +98,11 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-gray-100 text-gray-900 font-semibold'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-gray-100 text-gray-900 font-semibold dark:bg-gray-800 dark:text-white'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-gray-900' : 'text-gray-500'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`} />
                     {item.name}
                   </button>
                 );
@@ -111,13 +111,13 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
           </div>
 
           {/* Logout Button */}
-          <div className="pt-6 border-t border-gray-100 mt-6">
+          <div className="pt-6 border-t border-gray-100 mt-6 dark:border-gray-800">
             <button
               onClick={handleSignOut}
               type="button"
-              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
             >
-              <LogOut className="w-4 h-4 text-gray-500 hover:text-red-600" />
+              <LogOut className="w-4 h-4 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" />
               Logout
             </button>
           </div>

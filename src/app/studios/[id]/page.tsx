@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import StudioDetails from "./StudioDetails";
 import { StudioType } from "@/type";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 
 interface Props {
@@ -8,9 +10,15 @@ interface Props {
 }
 
 async function getStudio(id: string): Promise<StudioType | null> {
+  const jwtToken = await auth.api.getToken({
+    headers: await headers(),
+  })
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
-    cache: "no-store" 
+    cache: "no-store", 
+    headers:{
+      "Authorization": `Bearer ${jwtToken.token}`
+    }
   });
 
   if (res.status === 404) return null;

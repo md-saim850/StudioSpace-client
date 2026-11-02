@@ -4,8 +4,8 @@ import { ArrowRight } from "lucide-react";
 
 export default function AboutCTA() {
   return (
-    <section className="px-5 py-20 bg-white">
-      <div className="max-w-7xl mx-auto bg-black text-white rounded-3xl p-10 md:p-16 text-center">
+    <section className="px-5 py-20 bg-white dark:bg-gray-950">
+      <div className="max-w-7xl mx-auto bg-black text-white rounded-3xl p-10 md:p-16 text-center dark:bg-gray-900 dark:border dark:border-gray-800">
         <h2 className="text-3xl md:text-5xl font-bold">
           Ready to Create Something Amazing?
         </h2>

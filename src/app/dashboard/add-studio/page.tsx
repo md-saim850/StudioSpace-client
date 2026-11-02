@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -12,18 +12,9 @@ import {
   Loader2,
   Check,
 } from "lucide-react";
+import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
-
-const categories = [
-  "Photo Studio",
-  "Film Stage",
-  "Podcast Lounge",
-  "Music Suite",
-  "Workshop",
-  "Event Space",
-  "Creative Workspace",
-  "Other",
-];
+import { CategoryType } from "@/type";
 
 const amenitiesList = [
   "Wi-Fi",
@@ -67,34 +58,77 @@ const initialFormData: StudioFormData = {
 export default function AddNewStudio() {
   const router = useRouter();
 
+  // Better Auth session
   const { data: session, isPending } = authClient.useSession();
 
+  // States
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<StudioFormData>(initialFormData);
-
+  const [formData, setFormData] =
+    useState<StudioFormData>(initialFormData);
   const [imageError, setImageError] = useState(false);
 
-  const handleChange = (field: keyof StudioFormData, value: string) => {
+  const inputClass =
+    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white dark:focus:ring-gray-800";
+
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300";
+
+  // Fetch categories
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/category`,
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+
+        setCategories(data);
+      } catch (error) {
+        console.error("Category fetching error:", error);
+        toast.error("Unable to load categories.");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    getCategories();
+  }, []);
+
+  // Handle input changes
+  const handleChange = (
+    field: keyof StudioFormData,
+    value: string
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
+  // Toggle amenities
   const toggleAmenity = (amenity: string) => {
     setFormData((prev) => ({
       ...prev,
       amenities: prev.amenities.includes(amenity)
-      ? prev.amenities.filter((item) => item !== amenity)
-      : [...prev.amenities, amenity],
+        ? prev.amenities.filter((item) => item !== amenity)
+        : [...prev.amenities, amenity],
     }));
   };
 
-  const inputClass = "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100";
-
-  const labelClass = "mb-2 block text-sm font-semibold text-gray-700";
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Submit studio
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     if (!session?.user) {
@@ -111,7 +145,16 @@ export default function AddNewStudio() {
     try {
       setLoading(true);
 
-      const studioData = {owner: {
+      // Get JWT token from Better Auth
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error("Unable to generate authentication token.");
+      }
+
+      // Studio data
+      const studioData = {
+        owner: {
           id: session.user.id,
           name: session.user.name,
           email: session.user.email,
@@ -119,18 +162,22 @@ export default function AddNewStudio() {
         ...formData,
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-studio`,{
+      // Send request to Express API
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/add-studio`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${data.token}`,
           },
           body: JSON.stringify(studioData),
         }
       );
 
-      const result = await res.json();
+      const result = await response.json();
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(
           result.message || "Failed to create studio."
         );
@@ -141,7 +188,7 @@ export default function AddNewStudio() {
       setFormData(initialFormData);
       setImageError(false);
 
-      router.push("/dashboard/my-studios");
+      router.push("/dashboard/my-listings");
       router.refresh();
 
     } catch (error) {
@@ -158,6 +205,7 @@ export default function AddNewStudio() {
     }
   };
 
+  // Session loading
   if (isPending) {
     return (
       <div className="flex min-h-60 items-center justify-center">
@@ -166,18 +214,21 @@ export default function AddNewStudio() {
     );
   }
 
+  // Authentication check
   if (!session?.user) {
     return (
-      <div className="rounded-2xl border bg-white p-8 text-center">
-        <h2 className="text-xl font-bold text-gray-900">
+      <div className="rounded-2xl border bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
           Sign in required
         </h2>
-        <p className="mt-2 text-sm text-gray-500">
+
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Please sign in to list your creative workspace.
         </p>
+
         <button
           onClick={() => router.push("/sign-in")}
-          className="mt-5 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white"
+          className="mt-5 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white dark:bg-white dark:text-black"
         >
           Sign In
         </button>
@@ -191,29 +242,29 @@ export default function AddNewStudio() {
       {/* Header */}
       <div className="mb-8">
         <div className="mb-2 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black">
             <Building2 size={21} />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
             List Your Creative Workspace
           </h1>
         </div>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Share your creative space with the StudioSpace community.
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border border-gray-100 bg-white shadow-sm"
+        className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
       >
         <div className="space-y-7 p-5 sm:p-8">
 
           {/* Owner Information */}
           <section>
-            <h2 className="mb-4 text-base font-bold text-gray-900">
+            <h2 className="mb-4 text-base font-bold text-gray-900 dark:text-white">
               Owner Information
             </h2>
 
@@ -224,7 +275,7 @@ export default function AddNewStudio() {
                   type="text"
                   value={session.user.name || ""}
                   readOnly
-                  className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
+                  className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400`}
                 />
               </div>
 
@@ -234,17 +285,17 @@ export default function AddNewStudio() {
                   type="email"
                   value={session.user.email || ""}
                   readOnly
-                  className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
+                  className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400`}
                 />
               </div>
             </div>
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-gray-100 dark:border-gray-800" />
 
           {/* Studio Information */}
           <section>
-            <h2 className="mb-5 text-base font-bold text-gray-900">
+            <h2 className="mb-5 text-base font-bold text-gray-900 dark:text-white">
               Studio Information
             </h2>
 
@@ -272,11 +323,20 @@ export default function AddNewStudio() {
                     handleChange("category", e.target.value)
                   }
                   className={inputClass}
+                  disabled={categoriesLoading}
                 >
-                  <option value="">Select studio category</option>
+                  <option value="">
+                    {categoriesLoading
+                      ? "Loading categories..."
+                      : "Select studio category"}
+                  </option>
+
                   {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                    <option
+                      key={category._id}
+                      value={category.slug}
+                    >
+                      {category.icon} {category.name}
                     </option>
                   ))}
                 </select>
@@ -369,11 +429,11 @@ export default function AddNewStudio() {
             </div>
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-gray-100 dark:border-gray-800" />
 
           {/* Studio Image */}
           <section>
-            <h2 className="mb-4 text-base font-bold text-gray-900">
+            <h2 className="mb-4 text-base font-bold text-gray-900 dark:text-white">
               Studio Image
             </h2>
 
@@ -392,16 +452,18 @@ export default function AddNewStudio() {
             />
 
             {formData.image && (
-              <div className="mt-4 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+              <div className="relative mt-4 h-52 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
                 {!imageError ? (
-                  <img
+                  <Image
+                    fill
                     src={formData.image}
                     alt="Studio preview"
-                    className="h-52 w-full object-cover"
+                    className="object-cover"
+                    unoptimized
                     onError={() => setImageError(true)}
                   />
                 ) : (
-                  <div className="flex h-52 items-center justify-center text-sm text-gray-400">
+                  <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-500">
                     Unable to load image. Check the image URL.
                   </div>
                 )}
@@ -409,15 +471,15 @@ export default function AddNewStudio() {
             )}
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-gray-100 dark:border-gray-800" />
 
           {/* Amenities */}
           <section>
-            <h2 className="mb-2 text-base font-bold text-gray-900">
+            <h2 className="mb-2 text-base font-bold text-gray-900 dark:text-white">
               Amenities & Facilities
             </h2>
 
-            <p className="mb-4 text-xs text-gray-500">
+            <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
               Select all facilities available in your studio.
             </p>
 
@@ -433,15 +495,15 @@ export default function AddNewStudio() {
                     onClick={() => toggleAmenity(amenity)}
                     className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-medium transition ${
                       selected
-                        ? "border-black bg-gray-900 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+                        ? "border-black bg-gray-900 text-white dark:border-white dark:bg-white dark:text-black"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-500"
                     }`}
                   >
                     <span
                       className={`flex h-4 w-4 items-center justify-center rounded border ${
                         selected
                           ? "border-white bg-white text-black"
-                          : "border-gray-300"
+                          : "border-gray-300 dark:border-gray-600"
                       }`}
                     >
                       {selected && <Check size={11} />}
@@ -454,11 +516,11 @@ export default function AddNewStudio() {
             </div>
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-gray-100 dark:border-gray-800" />
 
           {/* Overview */}
           <section>
-            <h2 className="mb-4 text-base font-bold text-gray-900">
+            <h2 className="mb-4 text-base font-bold text-gray-900 dark:text-white">
               Detailed Overview
             </h2>
 
@@ -477,16 +539,15 @@ export default function AddNewStudio() {
         </div>
 
         {/* Submit */}
-        <div className="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50/70 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-
-          <p className="text-xs text-gray-400">
+        <div className="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50/70 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 dark:border-gray-800 dark:bg-gray-800/30">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             Fields marked * are required.
           </p>
 
           <button
             type="submit"
-            disabled={loading}
-            className="flex items-center justify-center gap-2 rounded-xl bg-black px-7 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={loading || categoriesLoading}
+            className="flex items-center justify-center gap-2 rounded-xl bg-black px-7 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
           >
             {loading ? (
               <>
@@ -500,7 +561,6 @@ export default function AddNewStudio() {
               </>
             )}
           </button>
-
         </div>
       </form>
     </div>

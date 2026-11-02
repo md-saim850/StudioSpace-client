@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

@@ -28,24 +28,24 @@ const features = [
 
 export default function AboutSection() {
   return (
-    <section className="py-20 px-5 bg-white">
+    <section className="py-20 px-5 bg-white dark:bg-gray-950">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           <div>
-            <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-gray-500">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
               <Sparkles size={16} />
               About StudioSpace
             </span>
 
-            <h2 className="text-3xl md:text-5xl font-bold text-black mt-5 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-black mt-5 leading-tight dark:text-white">
               Your Creative Space,
-              <span className="text-gray-400"> Your Next Big Idea.</span>
+              <span className="text-gray-400 dark:text-gray-500"> Your Next Big Idea.</span>
             </h2>
 
-            <p className="text-gray-600 leading-8 mt-6 max-w-xl">
+            <p className="text-gray-600 leading-8 mt-6 max-w-xl dark:text-gray-300">
               StudioSpace makes finding and booking creative spaces
               easier than ever. Whether you're a photographer,
               filmmaker, podcaster, or content creator, discover
@@ -54,7 +54,7 @@ export default function AboutSection() {
 
             <Link
               href="/about"
-              className="inline-flex items-center gap-3 bg-black text-white px-7 py-3.5 rounded-full mt-8 font-semibold hover:bg-gray-800 transition-all group"
+              className="inline-flex items-center gap-3 bg-black text-white px-7 py-3.5 rounded-full mt-8 font-semibold hover:bg-gray-800 transition-all group dark:bg-white dark:text-black dark:hover:bg-gray-200"
             >
               Learn More About Us
               <ArrowRight
@@ -73,19 +73,19 @@ export default function AboutSection() {
               return (
                 <div
                   key={feature.title}
-                  className={`p-7 rounded-2xl border border-gray-200 hover:border-black transition-all duration-300 hover:shadow-lg ${
+                  className={`p-7 rounded-2xl border border-gray-200 hover:border-black transition-all duration-300 hover:shadow-lg dark:border-gray-800 dark:hover:border-white dark:hover:bg-gray-900 ${
                     index === 0 ? "sm:col-span-2" : ""
                   }`}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-black text-white flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-black text-white flex items-center justify-center dark:bg-white dark:text-black">
                     <Icon size={23} />
                   </div>
 
-                  <h3 className="text-xl font-bold mt-5 text-black">
+                  <h3 className="text-xl font-bold mt-5 text-black dark:text-white">
                     {feature.title}
                   </h3>
 
-                  <p className="text-gray-500 mt-2 leading-7">
+                  <p className="text-gray-500 mt-2 leading-7 dark:text-gray-400">
                     {feature.description}
                   </p>
                 </div>
@@ -96,14 +96,14 @@ export default function AboutSection() {
         </div>
 
         {/* Bottom Highlight */}
-        <div className="mt-16 border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
-          <p className="text-gray-500 text-sm">
+        <div className="mt-16 border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between gap-4 items-start md:items-center dark:border-gray-800">
+          <p className="text-gray-500 text-sm dark:text-gray-400">
             Making creative spaces accessible to everyone.
           </p>
 
           <Link
             href="/about"
-            className="text-black font-semibold inline-flex items-center gap-2 hover:gap-3 transition-all"
+            className="text-black font-semibold inline-flex items-center gap-2 hover:gap-3 transition-all dark:text-white"
           >
             Discover Our Story <ArrowRight size={17} />
           </Link>

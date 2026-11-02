@@ -80,13 +80,13 @@ const featuresData: Feature[] = [
 
 export default function HowItWorks() {
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <section id="how-it-works" className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-24 py-20">
       {/* Top Section: Header & 4 Steps */}
       <div className="mb-10">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-white">
           How Booking Works
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
           Get started in just a few simple steps
         </p>
 
@@ -97,18 +97,18 @@ export default function HowItWorks() {
             return (
               <div
                 key={step.id}
-                className={`flex flex-col items-start bg-gray-100 p-5 rounded-2xl`} 
+                className={`flex flex-col items-start bg-gray-100 p-5 rounded-2xl dark:bg-gray-900 dark:border dark:border-gray-800`} 
               >
                 {/* Icon Circle */}
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                  <Icon className="w-5 h-5 text-gray-800" />
+                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4 dark:bg-gray-800">
+                  <Icon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
                 </div>
 
                 {/* Step Title & Subtitle */}
-                <h3 className="font-bold text-gray-900 text-base mb-1">
+                <h3 className="font-bold text-gray-900 text-base mb-1 dark:text-white">
                   {step.title}
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-sm text-gray-500 leading-relaxed dark:text-gray-400">
                   {step.description}
                 </p>
               </div>
@@ -118,7 +118,7 @@ export default function HowItWorks() {
       </div>
 
       {/* Bottom Dark Card: Host Guarantee & Creator Support */}
-      <div className="bg-black text-white rounded-2xl p-6 sm:p-10 shadow-lg">
+      <div className="bg-black text-white rounded-2xl p-6 sm:p-10 shadow-lg dark:bg-gray-900 dark:border dark:border-gray-800">
         {/* Banner Header */}
         <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
           Host Guarantee & Creator Support
@@ -134,7 +134,7 @@ export default function HowItWorks() {
             return (
               <div key={feature.id} className="flex flex-col items-start">
                 {/* Icon Circle (Dark Theme) */}
-                <div className="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
+                <div className="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3 dark:bg-neutral-800 dark:border-neutral-700">
                   <Icon className="w-5 h-5 text-gray-200" />
                 </div>
 

@@ -22,12 +22,12 @@ export interface StudioType {
 
 
 export interface CategoryType{
-  id:string;
+  _id:string;
   name:string;
   slug:string;
   description:string;
   icon:string;
-  isActive:string;
+  isActive:boolean;
   image:string;
   count:number;
 }

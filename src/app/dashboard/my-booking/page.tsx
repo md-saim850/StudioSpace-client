@@ -1,16 +1,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import DeleteBtn from './DeleteBtn';
-
-interface StatCard {
-  id: string;
-  title: string;
-  value: string;
-}
+import { authClient } from '@/lib/auth-client';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
 
 const getMyBooking = async () => {
   try {
-    const response = await fetch('http://localhost:5000/my-booking');
+    const jwtToken = await auth.api.getToken({
+      headers: await headers(),
+    })
+
+    const response = await fetch('http://localhost:5000/my-booking',{
+      headers:{
+        "Authorization": `Bearer ${jwtToken?.token}`
+      }
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch bookings');
@@ -34,29 +39,29 @@ export default async function MyBookings() {
 
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
           My Bookings
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
           Manage and track all your studio bookings.
         </p>
       </div>
 
       {/* Recent Bookings Card */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 dark:bg-gray-900 dark:border-gray-800">
 
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             All Bookings
           </h2>
 
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             {bookingsData.length} Bookings
           </span>
         </div>
 
         {/* Bookings List */}
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-gray-800">
           {bookingsData.map((booking, index:number) => (
             <div
               key={index}
@@ -69,37 +74,37 @@ export default async function MyBookings() {
                   height={200}
                   src={booking.studio.data.image}
                   alt={booking.studio.data.title}
-                  className="w-16 h-14 rounded-xl object-cover border border-gray-100 shrink-0"
+                  className="w-16 h-14 rounded-xl object-cover border border-gray-100 shrink-0 dark:border-gray-800"
                 />
 
                 <div>
-                  <h3 className="font-bold text-sm text-gray-900">
+                  <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                     {booking.studio.data.title}
                   </h3>
 
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
                     {`${booking.date} ${booking.time}`}
                   </p>
                 </div>
               </Link>
 
               {/* Status Badge */}
-              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 sm:gap-4 border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 sm:gap-4 border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100 dark:border-gray-800">
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-semibold border inline-flex items-center justify-center shrink-0 ${
                     booking.status === 'Confirmed'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800'
                       : booking.status === 'Pending'
-                      ? 'bg-amber-50 text-amber-700 border-amber-200'
-                      : 'bg-gray-50 text-gray-600 border-gray-200'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'
+                      : 'bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
                   }`}
                 >
                   {booking.status}
                 </span>
 
                 {/* Hourly Rate */}
-                <span className="font-bold text-sm text-gray-900 shrink-0 tabular-nums">
-                  ${booking.studio.data.hourlyRate} <span className="text-xs text-gray-500 font-normal">/ hr</span>
+                <span className="font-bold text-sm text-gray-900 shrink-0 tabular-nums dark:text-white">
+                  ${booking.studio.data.hourlyRate} <span className="text-xs text-gray-500 font-normal dark:text-gray-400">/ hr</span>
                 </span>
 
                 {/* Cancel Action Button */}
