@@ -37,7 +37,7 @@ export default function Navbar() {
             <Link href="#" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
               How It Works
             </Link>
-            <Link href="#" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
+            <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-950 transition-colors">
               About Us
             </Link>
           </nav>
@@ -89,7 +89,7 @@ export default function Navbar() {
           <Link href="#how-it-works" className="block py-2 text-base font-medium text-gray-600">
             How It Works
           </Link>
-          <Link href="#about" className="block py-2 text-base font-medium text-gray-600">
+          <Link href="/about" className="block py-2 text-base font-medium text-gray-600">
             About Us
           </Link>
 

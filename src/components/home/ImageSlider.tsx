@@ -59,6 +59,7 @@ export default function ImageSlider() {
             <div className="relative w-full h-full">
               <Image  
                 fill
+                unoptimized
                 src={slide.image}
                 alt={slide.title}
                 className="w-full h-full object-cover grayscale contrast-105"

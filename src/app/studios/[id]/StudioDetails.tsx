@@ -16,19 +16,11 @@ import Image from "next/image";
 import type{ StudioType } from "@/type";
 import { toast } from "sonner";
 
-interface StudioDetailsProps {
+interface StudioProps {
   studio: StudioType;
-
-  onBook?: (booking: {
-    studioId: string;
-    date: string;
-    time: string;
-    hourlyRate: number;
-    securityDeposit: number;
-  }) => void | Promise<void>;
 }
 
-export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
+export default function StudioDetails({studio}:StudioProps) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [booking, setBooking] = useState(false);
@@ -40,26 +32,34 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleBooking = async(e:React.SubmitEvent<HTMLElement>) => {
     e.preventDefault();
+    setBooking(true);
 
     if (!date || !time) return;
 
-    if (!onBook) {
-      toast.error("Booking API is not connected yet.");
-      return;
-    }
-
     try {
-      setBooking(true);
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
 
-      await onBook({
-        studioId: studio._id,
-        date,
-        time,
-        hourlyRate: studio.hourlyRate,
-        securityDeposit: studio.securityDeposit,
-      });
+      const{date, time} = data;
+      const bookingData = {studio, date, time, status:"Pending"};
+      
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,{
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json",
+        },
+        body:JSON.stringify(bookingData)
+      })
+
+      if(!res.ok){
+        toast.error("Failed to add studio.");
+        return;
+      }
+
+      toast.success("Studio added in My Booking list.")
+
     } catch (error) {
       console.error("Booking error:", error);
     } finally {
@@ -86,8 +86,8 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
             <div className="relative h-[260px] overflow-hidden rounded-2xl border border-gray-100 bg-gray-100 sm:h-[400px]">
               <Image
                 fill
-                src={studio.image}
-                alt={studio.title}
+                src={studio.data.image}
+                alt={studio.data.title}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -97,26 +97,14 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
 
               <div>
                 <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                  {studio.title}
+                  {studio.data.title}
                 </h1>
 
                 <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-gray-500">
 
                   <span className="flex items-center gap-1.5">
-                    <Star
-                      size={14}
-                      className="fill-amber-400 text-amber-400"
-                    />
-                    <strong className="text-gray-900">
-                      {studio.rating ?? "New"}
-                    </strong>
-                    {studio.reviewCount !== undefined &&
-                      `(${studio.reviewCount} reviews)`}
-                  </span>
-
-                  <span className="flex items-center gap-1.5">
                     <MapPin size={14} />
-                    {studio.location}
+                    {studio.data.location}
                   </span>
 
                 </div>
@@ -124,7 +112,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
 
               <div className="shrink-0">
                 <p className="text-2xl font-bold text-gray-900">
-                  ${studio.hourlyRate}
+                  ${studio.data.hourlyRate}
                   <span className="text-sm font-normal text-gray-500">
                     {" "}/ hr
                   </span>
@@ -136,7 +124,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
             {/* Category */}
             <div>
               <span className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-xs font-medium text-gray-700">
-                {studio.category}
+                {studio.data.category}
               </span>
             </div>
 
@@ -147,7 +135,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
               </h2>
 
               <p className="text-sm leading-7 text-gray-600">
-                {studio.overview}
+                {studio.data.overview}
               </p>
             </div>
 
@@ -163,7 +151,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                   <Users size={18} className="mb-3 text-gray-500" />
                   <p className="text-xs text-gray-500">Max Capacity</p>
                   <p className="mt-1 text-sm font-bold text-gray-900">
-                    {studio.maxCapacity} People
+                    {studio.data.maxCapacity} People
                   </p>
                 </div>
 
@@ -171,7 +159,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                   <Clock size={18} className="mb-3 text-gray-500" />
                   <p className="text-xs text-gray-500">Hourly Rate</p>
                   <p className="mt-1 text-sm font-bold text-gray-900">
-                    ${studio.hourlyRate}/hr
+                    ${studio.data.hourlyRate}/hr
                   </p>
                 </div>
 
@@ -179,7 +167,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                   <ShieldCheck size={18} className="mb-3 text-gray-500" />
                   <p className="text-xs text-gray-500">Security Deposit</p>
                   <p className="mt-1 text-sm font-bold text-gray-900">
-                    ${studio.securityDeposit}
+                    ${studio.data.securityDeposit}
                   </p>
                 </div>
 
@@ -192,10 +180,10 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                 Amenities
               </h2>
 
-              {studio.amenities?.length > 0 ? (
+              {studio.data.amenities?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
 
-                  {studio.amenities.map((amenity) => (
+                  {studio.data.amenities.map((amenity) => (
                     <div
                       key={amenity}
                       className="flex items-center gap-2 text-sm text-gray-600"
@@ -259,6 +247,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
 
                   <input
                     id="booking-date"
+                    name="date"
                     type="date"
                     required
                     min={minDate}
@@ -280,6 +269,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
 
                   <input
                     id="booking-time"
+                    name="time"
                     type="time"
                     required
                     value={time}
@@ -300,7 +290,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                       Hourly rate
                     </span>
                     <span className="font-semibold text-gray-900">
-                      ${studio.hourlyRate}
+                      ${studio.data.hourlyRate}
                     </span>
                   </div>
 
@@ -309,7 +299,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                       Security deposit
                     </span>
                     <span className="font-semibold text-gray-900">
-                      ${studio.securityDeposit}
+                      ${studio.data.securityDeposit}
                     </span>
                   </div>
 
@@ -319,7 +309,7 @@ export default function StudioDetails({studio,onBook}: StudioDetailsProps) {
                         Initial Amount
                       </span>
                       <span className="text-lg font-bold text-gray-900">
-                        ${studio.hourlyRate + studio.securityDeposit}
+                        ${studio.data.hourlyRate + studio.data.securityDeposit}
                       </span>
                     </div>
                     <p className="mt-1 text-[10px] text-gray-400">

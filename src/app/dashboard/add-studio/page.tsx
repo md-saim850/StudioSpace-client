@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,7 +12,7 @@ import {
   Loader2,
   Check,
 } from "lucide-react";
-import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 const categories = [
   "Photo Studio",
@@ -66,13 +67,14 @@ const initialFormData: StudioFormData = {
 export default function AddNewStudio() {
   const router = useRouter();
 
+  const { data: session, isPending } = authClient.useSession();
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<StudioFormData>(initialFormData);
 
-  const handleChange = (
-    field: keyof StudioFormData,
-    value: string
-  ) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleChange = (field: keyof StudioFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -82,53 +84,106 @@ export default function AddNewStudio() {
   const toggleAmenity = (amenity: string) => {
     setFormData((prev) => ({
       ...prev,
-      amenities: prev.amenities.includes(amenity) ? 
-        prev.amenities.filter((item) => item !== amenity)
-      : 
-        [...prev.amenities, amenity],
+      amenities: prev.amenities.includes(amenity)
+      ? prev.amenities.filter((item) => item !== amenity)
+      : [...prev.amenities, amenity],
     }));
   };
 
   const inputClass = "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100";
+
   const labelClass = "mb-2 block text-sm font-semibold text-gray-700";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!session?.user) {
+      toast.error("Please sign in before creating a studio.");
+      router.push("/sign-in");
+      return;
+    }
+
+    if (formData.amenities.length === 0) {
+      toast.error("Please select at least one amenity.");
+      return;
+    }
+
     try {
       setLoading(true);
+
+      const studioData = {owner: {
+          id: session.user.id,
+          name: session.user.name,
+          email: session.user.email,
+        },
+        ...formData,
+      };
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-studio`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({...formData}),
+          body: JSON.stringify(studioData),
         }
       );
 
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || "Failed to create studio.");
+        throw new Error(
+          result.message || "Failed to create studio."
+        );
       }
 
       toast.success("Studio created successfully!");
 
       setFormData(initialFormData);
+      setImageError(false);
 
-      router.push("/dashboard/my-booking");
+      router.push("/dashboard/my-studios");
       router.refresh();
 
     } catch (error) {
       console.error("Studio creation error:", error);
-      toast.error("Something went wrong.");
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong."
+      );
 
     } finally {
       setLoading(false);
-
     }
   };
+
+  if (isPending) {
+    return (
+      <div className="flex min-h-60 items-center justify-center">
+        <Loader2 className="animate-spin" size={28} />
+      </div>
+    );
+  }
+
+  if (!session?.user) {
+    return (
+      <div className="rounded-2xl border bg-white p-8 text-center">
+        <h2 className="text-xl font-bold text-gray-900">
+          Sign in required
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          Please sign in to list your creative workspace.
+        </p>
+        <button
+          onClick={() => router.push("/sign-in")}
+          className="mt-5 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -141,7 +196,7 @@ export default function AddNewStudio() {
           </div>
 
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            Add New Studio
+            List Your Creative Workspace
           </h1>
         </div>
 
@@ -166,7 +221,8 @@ export default function AddNewStudio() {
               <div>
                 <label className={labelClass}>Owner Name</label>
                 <input
-                  value="Md. Saim"
+                  type="text"
+                  value={session.user.name || ""}
                   readOnly
                   className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
                 />
@@ -176,7 +232,7 @@ export default function AddNewStudio() {
                 <label className={labelClass}>Owner Email</label>
                 <input
                   type="email"
-                  value="sayeemahmed850@gmail.com"
+                  value={session.user.email || ""}
                   readOnly
                   className={`${inputClass} cursor-not-allowed bg-gray-50 text-gray-500`}
                 />
@@ -193,14 +249,15 @@ export default function AddNewStudio() {
             </h2>
 
             <div className="space-y-5">
-
               <div>
                 <label className={labelClass}>Studio Title *</label>
                 <input
                   required
                   type="text"
                   value={formData.title}
-                  onChange={(e) =>handleChange("title", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("title", e.target.value)
+                  }
                   placeholder="e.g. The Ivory Cyc Studio"
                   className={inputClass}
                 />
@@ -211,11 +268,12 @@ export default function AddNewStudio() {
                 <select
                   required
                   value={formData.category}
-                  onChange={(e) =>handleChange("category", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("category", e.target.value)
+                  }
                   className={inputClass}
                 >
                   <option value="">Select studio category</option>
-
                   {categories.map((category) => (
                     <option key={category} value={category}>
                       {category}
@@ -238,7 +296,9 @@ export default function AddNewStudio() {
                     type="number"
                     min="1"
                     value={formData.hourlyRate}
-                    onChange={(e) =>handleChange("hourlyRate", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("hourlyRate", e.target.value)
+                    }
                     placeholder="e.g. 50"
                     className={inputClass}
                   />
@@ -257,7 +317,9 @@ export default function AddNewStudio() {
                     type="number"
                     min="0"
                     value={formData.securityDeposit}
-                    onChange={(e) => handleChange("securityDeposit", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("securityDeposit", e.target.value)
+                    }
                     placeholder="e.g. 100"
                     className={inputClass}
                   />
@@ -277,7 +339,9 @@ export default function AddNewStudio() {
                   type="number"
                   min="1"
                   value={formData.maxCapacity}
-                  onChange={(e) => handleChange("maxCapacity", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("maxCapacity", e.target.value)
+                  }
                   placeholder="Maximum number of people"
                   className={inputClass}
                 />
@@ -295,12 +359,13 @@ export default function AddNewStudio() {
                   required
                   type="text"
                   value={formData.location}
-                  onChange={(e) => handleChange("location", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("location", e.target.value)
+                  }
                   placeholder="Street address, city, state"
                   className={inputClass}
                 />
               </div>
-
             </div>
           </section>
 
@@ -318,20 +383,28 @@ export default function AddNewStudio() {
               required
               type="url"
               value={formData.image}
-              onChange={(e) => handleChange("image", e.target.value)}
+              onChange={(e) => {
+                handleChange("image", e.target.value);
+                setImageError(false);
+              }}
               placeholder="https://example.com/studio.jpg"
               className={inputClass}
             />
 
             {formData.image && (
-              <div className="relative mt-4 h-52 w-full overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
-                <Image
-                  fill
-                  src={formData.image}
-                  alt="Studio preview"
-                  className="h-full w-full object-cover"
-                  onError={(e) => {e.currentTarget.style.display = "none";}}
-                />
+              <div className="mt-4 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                {!imageError ? (
+                  <img
+                    src={formData.image}
+                    alt="Studio preview"
+                    className="h-52 w-full object-cover"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <div className="flex h-52 items-center justify-center text-sm text-gray-400">
+                    Unable to load image. Check the image URL.
+                  </div>
+                )}
               </div>
             )}
           </section>
@@ -350,24 +423,25 @@ export default function AddNewStudio() {
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {amenitiesList.map((amenity) => {
-                const selected = formData.amenities.includes(amenity);
+                const selected =
+                  formData.amenities.includes(amenity);
 
                 return (
                   <button
                     key={amenity}
                     type="button"
                     onClick={() => toggleAmenity(amenity)}
-                    className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-medium transition ${selected ? 
-                      "border-black bg-gray-900 text-white"
-                    : 
-                      "border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+                    className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-medium transition ${
+                      selected
+                        ? "border-black bg-gray-900 text-white"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-400"
                     }`}
                   >
                     <span
-                      className={`flex h-4 w-4 items-center justify-center rounded border ${selected ? 
-                        "border-white bg-white text-black"
-                      : 
-                        "border-gray-300"
+                      className={`flex h-4 w-4 items-center justify-center rounded border ${
+                        selected
+                          ? "border-white bg-white text-black"
+                          : "border-gray-300"
                       }`}
                     >
                       {selected && <Check size={11} />}
@@ -392,7 +466,9 @@ export default function AddNewStudio() {
               required
               rows={6}
               value={formData.overview}
-              onChange={(e) => handleChange("overview", e.target.value)}
+              onChange={(e) =>
+                handleChange("overview", e.target.value)
+              }
               placeholder="Describe your studio, its atmosphere, facilities, equipment and what makes it special..."
               className={`${inputClass} resize-none`}
             />

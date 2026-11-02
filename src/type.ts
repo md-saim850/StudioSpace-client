@@ -1,19 +1,33 @@
 export interface StudioType {
   _id: string;
-  id?:string;
-  title: string;
-  category: string;
-  hourlyRate: number;
-  securityDeposit: number;
-  maxCapacity: number;
-  location: string;
-  image: string;
-  amenities: string[];
-  overview: string;
   ownerName?: string;
   ownerEmail?: string;
-  rating?: number;
-  reviewCount?: number;
-  dateTime?:string
-  status?:string
+  data:{
+    id?:string;
+    title: string;
+    category: string;
+    hourlyRate: number;
+    securityDeposit: number;
+    maxCapacity: number;
+    location: string;
+    image: string;
+    amenities: string[];
+    overview: string;
+    rating?: number;
+    reviewCount?: number;
+    dateTime?:string
+    status?:string
+  }
+}
+
+
+export interface CategoryType{
+  id:string;
+  name:string;
+  slug:string;
+  description:string;
+  icon:string;
+  isActive:string;
+  image:string;
+  count:number;
 }

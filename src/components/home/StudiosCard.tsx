@@ -1,16 +1,17 @@
-import type{ Studio } from '@/type'
-import { ArrowRight, MapPin, Star } from 'lucide-react'
+import type{ StudioType } from '@/type'
+import { ArrowRight, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props{
-  studio:Studio
+  studio:StudioType
+  index:number
 }
 
-export default function StudiosCard({studio}:Props) {
+export default function StudiosCard({studio, index}:Props) {
   return (
     <div
-      key={studio.id}
+      key={index}
       className="flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
     >
       {/* Image & Badge Container */}
@@ -18,14 +19,14 @@ export default function StudiosCard({studio}:Props) {
         <Image
           width={400}
           height={300}
-          src={studio.image}
-          alt={studio.title}
+          src={studio.data.image}
+          alt={studio.data.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
         {/* Category Badge */}
         <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full font-medium">
-          {studio.category}
+          {studio.data.category}
         </div>
       </div>
 
@@ -34,26 +35,19 @@ export default function StudiosCard({studio}:Props) {
         <div>
           {/* Title */}
           <h3 className="font-semibold text-gray-900 text-base line-clamp-1 group-hover:text-black">
-            {studio.title}
+            {studio.data.title}
           </h3>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 mt-1.5 text-xs text-gray-600">
-            <Star className="w-3.5 h-3.5 fill-black text-black" />
-            <span className="font-semibold text-gray-900">{studio.rating}</span>
-            <span className="text-gray-400">({studio.reviewsCount})</span>
-          </div>
 
           {/* Price */}
           <div className="mt-3 text-gray-900">
-            <span className="text-lg font-bold">${studio.pricePerHour}</span>
+            <span className="text-lg font-bold">${studio.data.hourlyRate}</span>
             <span className="text-xs text-gray-500 font-normal"> / hr</span>
           </div>
 
           {/* Location */}
           <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
             <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-            <span className="truncate">{studio.location}</span>
+            <span className="truncate">{studio.data.location}</span>
           </div>
         </div>
 

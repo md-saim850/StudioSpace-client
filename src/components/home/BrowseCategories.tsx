@@ -1,54 +1,32 @@
-import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { CategoryType } from '@/type';
+import Link from 'next/link';
 
-interface Category {
-  id: string;
-  name: string;
-  count: string;
-  image: string;
-}
+const getCategory = async (): Promise<CategoryType[]> => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category?limit=6`,{
+        cache: "no-store",
+      }
+    );
 
-const categoriesData: Category[] = [
-  {
-    id: '1',
-    name: 'Photo Studios',
-    count: '52+ studios',
-    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: '2',
-    name: 'Sound Stages',
-    count: '18+ studios',
-    image: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: '3',
-    name: 'Podcast Rooms',
-    count: '24+ studios',
-    image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: '4',
-    name: 'Music Suites',
-    count: '14+ studios',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: '5',
-    name: 'Art Workshops',
-    count: '14+ studios',
-    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: '6',
-    name: 'Art Workshops',
-    count: '14+ studios',
-    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop',
-  },
-];
+    if (!res.ok) {
+      throw new Error("Failed to fetch category");
+    }
 
-export default function BrowseCategories() {
+    const category: CategoryType[] = await res.json();
+    return category;
+
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return [];
+
+  }
+};
+
+export default async function BrowseCategories() {
+  const categoriesData:CategoryType[] = await getCategory();
+
   return (
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">
       {/* Header Section */}
@@ -71,10 +49,11 @@ export default function BrowseCategories() {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-        {categoriesData.map((category) => (
-          <a
-            key={category.id}
-            href={`#${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+        {categoriesData.map((category, indx:number) => (
+          <Link
+            key={indx}
+            href={"#"}
+            // href={`#${category.name.toLowerCase().replace(/\s+/g, '-')}`}
             className="group relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300 block"
           >
             {/* Background Image with Zoom Effect */}
@@ -98,7 +77,7 @@ export default function BrowseCategories() {
                 {category.count}
               </p>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>

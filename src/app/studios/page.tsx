@@ -36,7 +36,7 @@ export default async function page() {
 
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
         {studiosData?.map((data, indx) => (
-          <StudiosCard key={indx} studio={data}/>
+          <StudiosCard key={indx} index={indx} studio={data}/>
         ))}
       </div>
       
