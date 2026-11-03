@@ -88,13 +88,11 @@ export default function StudioDetails({studio}:StudioProps) {
         status: "Pending",
       };
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,
-        {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.token}`,
+            Authorization: `Bearer ${session?.token}`,
           },
           body: JSON.stringify(bookingData),
         }
