@@ -16,7 +16,6 @@ import Image from "next/image";
 import type{ StudioType } from "@/type";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
 
 interface StudioProps {
   studio: StudioType;
@@ -24,8 +23,31 @@ interface StudioProps {
 
 export default function StudioDetails({studio}:StudioProps) {
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [booking, setBooking] = useState(false);
+
+  const validateBookingTime = () => {
+    if (!date || !startTime || !endTime) {
+      toast.error("Please select date, start time and end time.");
+      return false;
+    }
+
+    if (startTime >= endTime) {
+      toast.error("End time must be after start time.");
+      return false;
+    }
+
+    const now = new Date();
+    const selectedStartDateTime = new Date(`${date}T${startTime}:00`);
+
+    if (selectedStartDateTime <= now) {
+      toast.error("Please select a future date and time.");
+      return false;
+    }
+
+    return true;
+  };
 
   const today = new Date();
   const minDate = [
@@ -34,39 +56,66 @@ export default function StudioDetails({studio}:StudioProps) {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  const handleBooking = async(e:React.SubmitEvent<HTMLElement>) => {
-    e.preventDefault();
-    setBooking(true);
-    const { data:session, error } = await authClient.token();
-    
 
-    if (!date || !time) return;
+  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateBookingTime()) return;
+
+    setBooking(true);
 
     try {
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
+      const { data: session, error } = await authClient.token();
 
-      const{date, time} = data;
-      const bookingData = {studio, date, time, status:"Pending"};
-      
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,{
-        method:"POST",
-        headers:{
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session?.token}`,
-        },
-        body:JSON.stringify(bookingData)
-      })
-
-      if(!res.ok){
-        toast.error("Failed to add studio.");
+      if (error || !session?.token) {
+        toast.error("Authentication failed. Please sign in again.");
         return;
       }
 
-      toast.success("Studio added in My Booking list.");
+      const bookingData = {
+        studio: {
+          _id: studio._id,
+          title: studio.data.title,
+          image: studio.data.image,
+          location: studio.data.location,
+          hourlyRate: studio.data.hourlyRate,
+          securityDeposit: studio.data.securityDeposit,
+          category: studio.data.category,
+        },
+        date,
+        startTime,
+        endTime,
+        status: "Pending",
+      };
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.token}`,
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result.message || "Failed to add booking.");
+        return;
+      }
+
+      toast.success("Studio booked successfully!");
+
+      setDate("");
+      setStartTime("");
+      setEndTime("");
 
     } catch (error) {
       console.error("Booking error:", error);
+      toast.error("Something went wrong while booking.");
     } finally {
       setBooking(false);
     }
@@ -262,72 +311,51 @@ export default function StudioDetails({studio}:StudioProps) {
                   />
                 </div>
 
-                {/* Time Input */}
+                {/* Start Time */}
                 <div>
                   <label
-                    htmlFor="booking-time"
+                    htmlFor="start-time"
                     className="mb-2 flex items-center gap-2 text-xs font-semibold text-gray-800 dark:text-gray-200"
                   >
                     <Clock size={15} />
-                    Select Booking Time
+                    Start Time
                   </label>
 
                   <input
-                    id="booking-time"
-                    name="time"
+                    id="start-time"
                     type="time"
                     required
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
                     className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
                   />
-
-                  <p className="mt-2 text-[11px] text-gray-400 dark:text-gray-500">
-                    You can type your preferred time or use the time picker.
-                  </p>
                 </div>
 
-                {/* Booking Summary */}
-                <div className="space-y-3 rounded-xl bg-gray-50 p-4 dark:bg-gray-800/50">
+                {/* End Time */}
+                <div>
+                  <label
+                    htmlFor="end-time"
+                    className="mb-2 flex items-center gap-2 text-xs font-semibold text-gray-800 dark:text-gray-200"
+                  >
+                    <Clock size={15} />
+                    End Time
+                  </label>
 
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Hourly rate
-                    </span>
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      ${studio.data.hourlyRate}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Security deposit
-                    </span>
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      ${studio.data.securityDeposit}
-                    </span>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-3 dark:border-gray-700">
-                    <div className="flex justify-between">
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">
-                        Initial Amount
-                      </span>
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">
-                        ${studio.data.hourlyRate + studio.data.securityDeposit}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-[10px] text-gray-400 dark:text-gray-500">
-                      Assumes one booking hour; final amount depends on duration.
-                    </p>
-                  </div>
-
+                  <input
+                    id="end-time"
+                    type="time"
+                    required
+                    min={startTime || undefined}
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
+                  />
                 </div>
 
                 {/* Book Button */}
                 <button
                   type="submit"
-                  disabled={!date || !time || booking}
+                  disabled={!date || !startTime || !endTime || booking}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400 dark:bg-white dark:text-black dark:hover:bg-gray-200 dark:disabled:bg-gray-700 dark:disabled:text-gray-400"
                 >
                   {booking ? "Processing..." : "Book Now"}

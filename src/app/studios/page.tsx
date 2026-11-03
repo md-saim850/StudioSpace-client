@@ -36,7 +36,8 @@ const getStudios = async (): Promise<StudioType[]> => {
 export default async function Page({ searchParams }: PageProps) {
   const { category } = await searchParams;
 
-  const studiosData = (await getStudios()).slice(0, 0);
+  const studiosData = await getStudios();
+  console.log(studiosData.length);
 
   const categoryTitle = category 
   ? category.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")

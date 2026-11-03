@@ -11,7 +11,6 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import Image from 'next/image';
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 
@@ -19,6 +18,8 @@ import { redirect } from 'next/navigation';
 export default function DashboardLayout({children,}: {children: React.ReactNode}) {
   const [activeTab, setActiveTab] = useState('My Bookings');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const {data:session, isPending} = authClient.useSession();
 
   const navItems = [
     { name: 'My Bookings', icon: Calendar , link:"my-booking"},
@@ -39,17 +40,12 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
         {/* Mobile Top Navbar Bar */}
         <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-3">
-            <Image
-              width={10}
-              height={10}
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"
-              alt="Sayeem Ahmad"
-              className="w-9 h-9 rounded-full object-cover"
-            />
-            <div>
-              <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Sayeem Ahmad</h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400">sayeem@gmail.com</p>
-            </div>
+              {!isPending &&(
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-900 dark:text-white">{session?.user.name}</h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{session?.user.email}</p>
+                </div>
+              )}
           </div>
           <button
             type="button"
@@ -69,10 +65,12 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
           <div>
             {/* User Profile Header (Desktop) */}
             <div className="hidden md:flex items-center gap-3 mb-8">
-              <div className="overflow-hidden">
-                <h4 className="font-bold text-sm text-gray-900 truncate dark:text-white">Sayeem Ahmad</h4>
-                <p className="text-xs text-gray-500 truncate dark:text-gray-400">sayeem@gmail.com</p>
-              </div>
+              {!isPending && (
+                <div className="overflow-hidden">
+                  <h4 className="font-bold text-sm text-gray-900 truncate dark:text-white">{session?.user.name}</h4>
+                  <p className="text-xs text-gray-500 truncate dark:text-gray-400">{session?.user.email}</p>
+                </div>
+              )}
             </div>
 
             {/* Navigation Items */}

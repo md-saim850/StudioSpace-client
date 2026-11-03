@@ -3,7 +3,7 @@ import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
 
 export default function DeleteBtn({id}:{id:string}) {
-  const { data: session, isPending } = authClient.useSession();
+
   
   const handleDelete = async () => {
     try {

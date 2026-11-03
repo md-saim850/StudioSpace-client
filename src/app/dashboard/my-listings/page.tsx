@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import Empty from '@/components/home/Empty';
+import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 
 const getMyListing = async () => {
   const jwtToken = await auth.api.getToken({
@@ -102,14 +103,16 @@ export default async function Mylistings() {
                   {/* Update Button */}
                   <Link
                     href={`/dashboard/edit-studio/${listing._id}`}
-                    className="rounded-lg bg-black px-4 py-2 text-white dark:bg-white dark:text-black"
+                    className="flex items-center gap-1 text-sm rounded-lg bg-black px-3 py-1 text-white dark:bg-white dark:text-black"
                   >
+                    <Pencil size={13}/>
                     Update
                   </Link>
 
                   {/* Delete Button */}
                   <DeleteBtn id={listing._id} />
 
+                  <Link href={`/studios/${listing._id}`}><SquareArrowOutUpRight size={18}/></Link>
                 </div>
               </div>
             </div>

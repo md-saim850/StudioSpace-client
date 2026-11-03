@@ -31,8 +31,6 @@ export default function SignInPage() {
         setError(error?.message as string);
         return;
       }
-
-      console.log(data);
   
     }catch(error){
       console.log(error);
@@ -100,6 +98,14 @@ export default function SignInPage() {
                 className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
+          </div>
+
+          <div className="">
+            {error && (
+              <p className="bg-red-100 p-2 rounded-md text-red-500 text-xs mt-1.5 dark:bg-red-950/40 dark:text-red-400">
+                {error}
+              </p>
+            )}
           </div>
 
           <button
