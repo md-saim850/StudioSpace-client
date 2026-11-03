@@ -4,6 +4,7 @@
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import type { StudioType } from "@/type";
+import StudiosCard from "@/components/home/StudiosCard";
 
 interface StudioFiltersProps {
   studios: StudioType[];
@@ -14,38 +15,26 @@ export default function StudioFilters({ studios }: StudioFiltersProps) {
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
 
-  // Get unique categories from available studios
   const categories = useMemo(() => {
     return [...new Set(studios.map((studio) => studio.data.category))].filter(Boolean);
   }, [studios]);
 
-  // Search, filter and sort
-  const filteredStudios = useMemo(() => {
-    let result = [...studios];
+  const filteredStudios = useMemo(() => {let result = [...studios];
 
-    // Search by studio name
     if (search.trim()) {
-      result = result.filter((studio) =>
-        studio.data.title.toLowerCase().includes(search.toLowerCase().trim())
-      );
+      result = result.filter((studio) => studio.data.title.toLowerCase().includes(search.toLowerCase().trim()));
     }
 
-    // Filter by category
-    if (category !== "all") {
-      result = result.filter(
-        (studio) => studio.data.category === category
-      );
+    if (category !== "all") { 
+      result = result.filter((studio) => studio.data.category === category);
     }
 
-    // Sort by hourly price
     if (sort === "min-max") {
-      result.sort(
-        (a, b) => Number(a.data.hourlyRate) - Number(b.data.hourlyRate)
-      );
+      result.sort((a, b) => Number(a.data.hourlyRate) - Number(b.data.hourlyRate));
+
     } else if (sort === "max-min") {
       result.sort(
-        (a, b) => Number(b.data.hourlyRate) - Number(a.data.hourlyRate)
-      );
+        (a, b) => Number(b.data.hourlyRate) - Number(a.data.hourlyRate));
     }
 
     return result;
@@ -153,15 +142,7 @@ export default function StudioFilters({ studios }: StudioFiltersProps) {
   );
 }
 
-// Keep the card rendering in a small component.
-import StudiosCard from "@/components/home/StudiosCard";
 
-function StudiosCardWrapper({
-  studio,
-  index,
-}: {
-  studio: StudioType;
-  index: number;
-}) {
+function StudiosCardWrapper({studio, index,}: {studio: StudioType;index: number;}) {
   return <StudiosCard studio={studio} index={index} />;
 }

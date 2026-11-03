@@ -1,14 +1,14 @@
-import type{ StudioType } from '@/type'
-import { ArrowRight, MapPin } from 'lucide-react'
+import type { StudioType } from '@/type'
+import { ArrowRight, MapPin, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface Props{
-  studio:StudioType
-  index:number
+interface Props {
+  studio: StudioType
+  index: number
 }
 
-export default function StudiosCard({studio, index}:Props) {
+export default function StudiosCard({ studio, index }: Props) {
   return (
     <div
       key={index}
@@ -28,6 +28,12 @@ export default function StudiosCard({studio, index}:Props) {
         <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full font-medium">
           {studio.data.category}
         </div>
+
+        {/* Rating Badge (Top Right) */}
+        {/* <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-gray-900 text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 shadow-sm dark:bg-gray-900/90 dark:text-gray-100">
+          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <span>{studio.data.rating || 4.5}</span>
+        </div> */}
       </div>
 
       {/* Card Content */}

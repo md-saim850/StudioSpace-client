@@ -4,6 +4,7 @@ import Link from 'next/link';
 import StudiosCard from './StudiosCard';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import Empty from './Empty';
 
 const getStudios = async (): Promise<StudioType[]> => {
   const jwtToken = await auth.api.getToken({
@@ -35,6 +36,10 @@ const getStudios = async (): Promise<StudioType[]> => {
 
 export default async function FeaturedStudios() {
   const studiosData = await getStudios();
+
+  if(studiosData.length === 0){
+    return <Empty />
+  }
 
   return (
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">

@@ -1,8 +1,9 @@
 import Image from 'next/image';
-import UpdateBtn from './UpdateBtn';
 import DeleteBtn from './DeleteBtn';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import Link from 'next/link';
+import Empty from '@/components/home/Empty';
 
 const getMyListing = async () => {
   const jwtToken = await auth.api.getToken({
@@ -21,7 +22,6 @@ const getMyListing = async () => {
     
     const data = await response.json();
 
-    console.log(data);  
     return data;
 
   } catch (error) {
@@ -32,6 +32,11 @@ const getMyListing = async () => {
 
 export default async function Mylistings() {
   const listingData = await getMyListing();
+
+  if(listingData.length === 0){
+    return <Empty />
+  }
+
   return (
     <div className="space-y-8">
 
@@ -95,7 +100,12 @@ export default async function Mylistings() {
                 {/* Actions Group */}
                 <div className="flex items-center gap-2 shrink-0">
                   {/* Update Button */}
-                  <UpdateBtn />
+                  <Link
+                    href={`/dashboard/edit-studio/${listing._id}`}
+                    className="rounded-lg bg-black px-4 py-2 text-white dark:bg-white dark:text-black"
+                  >
+                    Update
+                  </Link>
 
                   {/* Delete Button */}
                   <DeleteBtn id={listing._id} />

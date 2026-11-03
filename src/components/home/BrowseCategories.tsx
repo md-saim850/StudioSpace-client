@@ -4,6 +4,7 @@ import { CategoryType } from '@/type';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import Empty from './Empty';
 
 const getCategory = async (): Promise<CategoryType[]> => {
   const jwtToken = await auth.api.getToken({
@@ -34,6 +35,10 @@ const getCategory = async (): Promise<CategoryType[]> => {
 
 export default async function BrowseCategories() {
   const categoriesData:CategoryType[] = await getCategory();
+
+  if(categoriesData.length === 0){
+    return <Empty />
+  }
 
   return (
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">

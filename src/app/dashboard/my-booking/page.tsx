@@ -4,6 +4,7 @@ import DeleteBtn from './DeleteBtn';
 import { authClient } from '@/lib/auth-client';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import Empty from '@/components/home/Empty';
 
 const getMyBooking = async () => {
   try {
@@ -33,6 +34,10 @@ const getMyBooking = async () => {
 export default async function MyBookings() {
 
   const bookingsData = await getMyBooking();
+
+  if(bookingsData.length === 0){
+    return <Empty />
+  }
 
   return (
     <div className="space-y-8">

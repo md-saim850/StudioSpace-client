@@ -31,6 +31,10 @@ const amenitiesList = [
   "Projector",
 ];
 
+interface AddNewStudioProps {
+  studioId?: string;
+}
+
 interface StudioFormData {
   title: string;
   category: string;
@@ -55,7 +59,8 @@ const initialFormData: StudioFormData = {
   overview: "",
 };
 
-export default function AddNewStudio() {
+export default function AddNewStudio({ studioId }: AddNewStudioProps) {
+  const isEdit = Boolean(studioId)
   const router = useRouter();
 
   // Better Auth session
@@ -65,15 +70,68 @@ export default function AddNewStudio() {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] =
-    useState<StudioFormData>(initialFormData);
+  const [formData, setFormData] = useState<StudioFormData>(initialFormData);
   const [imageError, setImageError] = useState(false);
 
-  const inputClass =
-    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white dark:focus:ring-gray-800";
+  const inputClass ="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white dark:focus:ring-gray-800";
+  const labelClass ="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300";
 
-  const labelClass =
-    "mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300";
+  //Fetch studio
+  useEffect(() => {
+    if (!studioId || isPending || !session?.user) return;
+
+    const getStudio = async () => {
+      try {
+        setLoading(true);
+
+        const { data, error } = await authClient.token();
+
+        if (error || !data?.token) {
+          throw new Error("Authentication failed.");
+        }
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch studio.");
+        }
+
+        const result = await response.json();
+
+        // Adjust this depending on your API response structure.
+        const studio = result.studio || result;
+
+        setFormData({
+          title: studio.data.title || "",
+          category: studio.data.category || "",
+          hourlyRate: String(studio.data.hourlyRate || ""),
+          securityDeposit: String(studio.data.securityDeposit || ""),
+          maxCapacity: String(studio.data.maxCapacity || ""),
+          location: studio.data.location || "",
+          image: studio.data.image || "",
+          amenities: studio.data.amenities || [],
+          overview: studio.data.overview || "",
+        });
+
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Something went wrong."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getStudio();
+  }, [studioId, isPending, session?.user]);
 
   // Fetch categories
   useEffect(() => {
@@ -126,13 +184,11 @@ export default function AddNewStudio() {
   };
 
   // Submit studio
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!session?.user) {
-      toast.error("Please sign in before creating a studio.");
+      toast.error("Please sign in first.");
       router.push("/sign-in");
       return;
     }
@@ -145,28 +201,29 @@ export default function AddNewStudio() {
     try {
       setLoading(true);
 
-      // Get JWT token from Better Auth
       const { data, error } = await authClient.token();
 
       if (error || !data?.token) {
         throw new Error("Unable to generate authentication token.");
       }
 
-      // Studio data
       const studioData = {
-        owner: {
-          id: session.user.id,
-          name: session.user.name,
-          email: session.user.email,
-        },
         ...formData,
+        ...(!isEdit && {
+          owner: {
+            id: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+          },
+        }),
       };
 
-      // Send request to Express API
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/add-studio`,
+        isEdit
+          ? `${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`
+          : `${process.env.NEXT_PUBLIC_API_URL}/add-studio`,
         {
-          method: "POST",
+          method: isEdit ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${data.token}`,
@@ -178,28 +235,22 @@ export default function AddNewStudio() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.message || "Failed to create studio."
-        );
+        throw new Error(result.message || "Operation failed.");
       }
 
-      toast.success("Studio created successfully!");
-
-      setFormData(initialFormData);
-      setImageError(false);
+      toast.success(
+        isEdit
+          ? "Studio updated successfully!"
+          : "Studio created successfully!"
+      );
 
       router.push("/dashboard/my-listings");
       router.refresh();
 
     } catch (error) {
-      console.error("Studio creation error:", error);
-
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong."
+        error instanceof Error ? error.message : "Something went wrong."
       );
-
     } finally {
       setLoading(false);
     }
@@ -246,8 +297,8 @@ export default function AddNewStudio() {
             <Building2 size={21} />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-            List Your Creative Workspace
+          <h1 className="text-2xl font-bold">
+            {isEdit ? "Update Your Studio" : "List Your Creative Workspace"}
           </h1>
         </div>
 
@@ -552,11 +603,11 @@ export default function AddNewStudio() {
             {loading ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                Creating Studio...
+                {isEdit ? "Updating Studio..." : "Creating Studio..."}
               </>
             ) : (
               <>
-                Create Studio
+                {isEdit ? "Update Studio" : "Create Studio"}
                 <Building2 size={16} />
               </>
             )}
