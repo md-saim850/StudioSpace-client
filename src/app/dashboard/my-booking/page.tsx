@@ -1,10 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import DeleteBtn from './DeleteBtn';
-import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import Empty from '@/components/home/Empty';
 import { CalendarDays, Clock } from 'lucide-react';
+import type{ Booking } from '@/type';
+import { headers } from 'next/headers';
+
+export const dynamic = "force-dynamic";
 
 const getMyBooking = async () => {
   try {
@@ -78,7 +81,7 @@ export default async function MyBookings() {
         {/* Bookings List */}
         <div className="divide-y divide-gray-100 dark:divide-gray-800">
 
-          {bookingsData.map((booking, index:number) => {
+          {bookingsData.map((booking:Booking, index:number) => {
             const totalHours = calculateTotalHours(
               booking.startTime,
               booking.endTime

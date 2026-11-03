@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import Empty from '@/components/home/Empty';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
+import type{ Listing } from '@/type';
 
 const getMyListing = async () => {
   const jwtToken = await auth.api.getToken({
@@ -66,7 +67,7 @@ export default async function Mylistings() {
 
         {/* listings List */}
         <div className="divide-y divide-gray-100 dark:divide-gray-800">
-          {listingData.map((listing, indx:number) => (
+          {listingData.map((listing:Listing, indx:number) => (
             <div
               key={indx}
               className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4"

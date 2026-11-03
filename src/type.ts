@@ -14,8 +14,6 @@ export interface StudioType {
     amenities: string[];
     overview: string;
     rating?: number;
-    reviewCount?: number;
-    dateTime?:string
     status?:string
   }
 }
@@ -30,4 +28,34 @@ export interface CategoryType{
   isActive:boolean;
   image:string;
   count:number;
+}
+
+export interface Studio {
+  _id: string;
+  title: string;
+  image: string;
+  hourlyRate: number | string;
+}
+
+export type BookingStatus = 'Confirmed' | 'Pending' | 'Cancelled';
+
+export interface Booking {
+  _id: string;
+  studio: Studio;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: BookingStatus;
+}
+
+export interface ListingData {
+  title: string;
+  image: string;
+  dateTime: string;
+  hourlyRate: number | string;
+}
+
+export interface Listing {
+  _id: string;
+  data: ListingData;
 }
