@@ -30,10 +30,10 @@ export default function StudiosCard({ studio, index }: Props) {
         </div>
 
         {/* Rating Badge (Top Right) */}
-        {/* <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-gray-900 text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 shadow-sm dark:bg-gray-900/90 dark:text-gray-100">
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-gray-900 text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 shadow-sm dark:bg-gray-900/90 dark:text-gray-100">
           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
           <span>{studio.data.rating || 4.5}</span>
-        </div> */}
+        </div>
       </div>
 
       {/* Card Content */}

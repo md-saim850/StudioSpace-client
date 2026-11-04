@@ -1,15 +1,22 @@
 'use client'
 import Link from "next/link";
-import { ArrowRight, Mail, Lock, Camera } from "lucide-react";
+import { ArrowRight, Mail, Lock, Camera, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { signIn } from "@/lib/auth-client";
+import { authClient, signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export default function SignInPage() {
   const[error, setError] = useState<string>("")
+  const[loading, setLoading] = useState(false)
+  const[googleLoading, setGoogleLoading] = useState(false)
 
   const handleSubmit = async(e:React.SubmitEvent<HTMLElement>) => {
     e.preventDefault();
+
+    if (loading) return;
+
+    setLoading(true);
+
     try{
       const formData = new FormData(e.target);
       const user = Object.fromEntries(formData.entries()) as {
@@ -35,8 +42,25 @@ export default function SignInPage() {
     }catch(error){
       console.log(error);
       toast.error("Failed to submit Sign-In form!")
+    } finally {
+      setLoading(false);
     }
   }
+
+  const handleSignIn = async () => {
+    if (googleLoading) return;
+
+    setGoogleLoading(true);
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL:"/",
+      }); 
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center px-5 py-12">
@@ -110,9 +134,19 @@ export default function SignInPage() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            disabled={loading}
+            className="w-full bg-black text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-gray-200"
           >
-            Sign In <ArrowRight size={17} />
+            {loading ? (
+              <>
+                <Loader2 size={17} className="animate-spin" />
+                Signing In...
+              </>
+            ) : (
+              <>
+                Sign In <ArrowRight size={17} />
+              </>
+            )}
           </button>
         </form>
 
@@ -126,15 +160,26 @@ export default function SignInPage() {
         {/* Google Button */}
         <button
           type="button"
-          className="w-full border border-gray-200 rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold text-black hover:bg-gray-50 transition dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+          onClick={handleSignIn}
+          disabled={googleLoading}
+          className="w-full border border-gray-200 rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold text-black hover:bg-gray-50 transition disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
         >
-          <svg viewBox="0 0 48 48" className="w-5 h-5" aria-hidden="true">
-            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.25 5.48-4.7 7.18l7.73 6C44.48 37.98 46.98 31.83 46.98 24.55z" />
-            <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.8 23.8 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z" />
-            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.89 2.3-8.18 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-          </svg>
-          Continue with Google
+          {googleLoading ? (
+            <>
+              <Loader2 size={20} className="animate-spin" />
+              Redirecting...
+            </>
+          ) : (
+            <>
+              <svg viewBox="0 0 48 48" className="w-5 h-5" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.25 5.48-4.7 7.18l7.73 6C44.48 37.98 46.98 31.83 46.98 24.55z" />
+                <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.8 23.8 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z" />
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.89 2.3-8.18 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+              </svg>
+              Continue with Google
+            </>
+          )}
         </button>
 
         {/* Footer */}

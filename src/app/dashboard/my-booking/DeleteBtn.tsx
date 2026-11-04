@@ -1,10 +1,17 @@
 'use client'
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export default function DeleteBtn({id}:{id:string}) {
+  const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
+    if (deleting) return;
+
+    setDeleting(true);
+
     try {
       const { data, error } = await authClient.token();
 
@@ -13,7 +20,7 @@ export default function DeleteBtn({id}:{id:string}) {
         return;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/delete-booking/${id}`,{
+      const res = await fetch(`${process.env.API_URL}/delete-booking/${id}`,{
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${data.token}`,
@@ -33,6 +40,8 @@ export default function DeleteBtn({id}:{id:string}) {
     } catch (error) {
       console.error("Delete studio error:", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -40,9 +49,17 @@ export default function DeleteBtn({id}:{id:string}) {
     <button
       onClick={handleDelete}
       type="button"
-      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 transition-colors shrink-0 cursor-pointer dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800 dark:hover:bg-rose-600 dark:hover:text-white"
+      disabled={deleting}
+      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800 dark:hover:bg-rose-600 dark:hover:text-white"
     >
-      Cancel Booking
+      {deleting ? (
+        <span className="inline-flex items-center gap-1.5">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          Cancelling...
+        </span>
+      ) : (
+        "Cancel Booking"
+      )}
     </button>
   )
 }

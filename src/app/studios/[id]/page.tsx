@@ -14,7 +14,7 @@ async function getStudio(id: string): Promise<StudioType | null> {
     headers: await headers(),
   })
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
+  const res = await fetch(`${process.env.API_URL}/studios/${id}`,{ 
     cache: "no-store", 
     headers:{
       "Authorization": `Bearer ${jwtToken?.token}`

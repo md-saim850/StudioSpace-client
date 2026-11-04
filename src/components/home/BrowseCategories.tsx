@@ -2,20 +2,12 @@ import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { CategoryType } from '@/type';
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import Empty from './Empty';
 
 const getCategory = async (): Promise<CategoryType[]> => {
-  const jwtToken = await auth.api.getToken({
-    headers: await headers(),
-  })
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category?limit=6`,{
+    const res = await fetch(`${process.env.API_URL}/category?limit=6`,{
         cache: "no-store",
-        headers:{
-          "Authorization": `Bearer ${jwtToken?.token}`
-        }
       }
     );
 

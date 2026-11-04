@@ -2,20 +2,12 @@ import type{ StudioType } from '@/type';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import StudiosCard from './StudiosCard';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import Empty from './Empty';
 
 const getStudios = async (): Promise<StudioType[]> => {
-  const jwtToken = await auth.api.getToken({
-    headers: await headers(),
-  })
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios?limit=6`,{
+    const res = await fetch(`${process.env.API_URL}/studios?limit=6`,{
         cache: "no-store",
-        headers:{
-          "Authorization":`Bearer ${jwtToken?.token}`
-        }
       }
     );
 

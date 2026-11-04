@@ -90,7 +90,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
           throw new Error("Authentication failed.");
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,
+        const response = await fetch(`${process.env.API_URL}/studios/${studioId}`,
           {
             headers: {
               Authorization: `Bearer ${data.token}`,
@@ -136,7 +136,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`,{
+        const response = await fetch(`${process.env.API_URL}/category`,{
             cache: "no-store",
             headers:{
               "Authorization": `Bearer ${session?.session.token}`
@@ -220,8 +220,8 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
 
       const response = await fetch(
         isEdit
-          ? `${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`
-          : `${process.env.NEXT_PUBLIC_API_URL}/add-studio`,
+          ? `${process.env.API_URL}/studios/${studioId}`
+          : `${process.env.API_URL}/add-studio`,
         {
           method: isEdit ? "PUT" : "POST",
           headers: {

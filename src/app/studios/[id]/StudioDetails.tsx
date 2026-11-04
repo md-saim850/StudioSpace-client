@@ -10,6 +10,7 @@ import {
   Users,
   ShieldCheck,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -60,6 +61,8 @@ export default function StudioDetails({studio}:StudioProps) {
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (booking) return;
+
     if (!validateBookingTime()) return;
 
     setBooking(true);
@@ -88,7 +91,7 @@ export default function StudioDetails({studio}:StudioProps) {
         status: "Pending",
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-booking/`,{
+      const res = await fetch(`${process.env.API_URL}/add-booking/`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -305,7 +308,8 @@ export default function StudioDetails({studio}:StudioProps) {
                     min={minDate}
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
+                    disabled={booking}
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
                   />
                 </div>
 
@@ -325,7 +329,8 @@ export default function StudioDetails({studio}:StudioProps) {
                     required
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
+                    disabled={booking}
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
                   />
                 </div>
 
@@ -346,7 +351,8 @@ export default function StudioDetails({studio}:StudioProps) {
                     min={startTime || undefined}
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
+                    disabled={booking}
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-2 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-white dark:focus:ring-gray-800"
                   />
                 </div>
 
@@ -356,8 +362,17 @@ export default function StudioDetails({studio}:StudioProps) {
                   disabled={!date || !startTime || !endTime || booking}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400 dark:bg-white dark:text-black dark:hover:bg-gray-200 dark:disabled:bg-gray-700 dark:disabled:text-gray-400"
                 >
-                  {booking ? "Processing..." : "Book Now"}
-                  {!booking && <ArrowLeft className="rotate-180" size={16} />}
+                  {booking ? (
+                    <>
+                      <Loader2 className="animate-spin" size={16} />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Book Now
+                      <ArrowLeft className="rotate-180" size={16} />
+                    </>
+                  )}
                 </button>
 
                 <p className="text-center text-[11px] text-gray-400 dark:text-gray-500">

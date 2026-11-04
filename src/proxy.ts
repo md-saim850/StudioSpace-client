@@ -31,6 +31,7 @@ export const config = {
     "/sign-in",
     "/sign-up",
     "/studios/:id",
-    "/dashboard/my-booking",
+    "/dashboard/:path",
+
   ],
 };

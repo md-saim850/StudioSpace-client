@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HeroContent() {
   return (
@@ -24,15 +25,15 @@ export default function HeroContent() {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
         {/* Button 1: Primary Action */}
-        <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-black hover:bg-gray-800 text-white font-medium text-base rounded-xl transition-all shadow-md group dark:bg-white dark:text-black dark:hover:bg-gray-200">
+        <Link href={"/studios"} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-black hover:bg-gray-800 text-white font-medium text-base rounded-xl transition-all shadow-md group dark:bg-white dark:text-black dark:hover:bg-gray-200">
           <span>Explore Studios</span>
           <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-        </button>
+        </Link>
 
         {/* Button 2: Secondary Action */}
-        <button className="inline-flex items-center justify-center px-7 py-3.5 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 font-medium text-base rounded-xl transition-all shadow-sm dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+        <Link href={"/dashboard/add-studio"} className="inline-flex items-center justify-center px-7 py-3.5 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 font-medium text-base rounded-xl transition-all shadow-sm dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
           Host Your Space
-        </button>
+        </Link>
       </div>
     </div>
   );

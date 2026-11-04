@@ -12,7 +12,7 @@ const getMyListing = async () => {
     headers: await headers(),
   })
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings`,{
+    const response = await fetch(`${process.env.API_URL}/my-listings`,{
       headers: {
         "Authorization": `Bearer ${jwtToken?.token}`
       },

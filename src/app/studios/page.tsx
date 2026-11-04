@@ -1,8 +1,6 @@
 
 import StudioFilters from "./StudioFilters";
-import { auth } from "@/lib/auth";
-import type { StudioType } from "@/type";
-import { headers } from "next/headers";
+import type { StudioType } from "@/type"
 
 interface PageProps {
   searchParams: Promise<{ category?: string }>;
@@ -10,15 +8,8 @@ interface PageProps {
 
 const getStudios = async (): Promise<StudioType[]> => {
   try {
-    const jwtToken = await auth.api.getToken({
-      headers: await headers(),
-    });
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`,{
+    const res = await fetch(`${process.env.API_URL}/studios`,{
         cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${jwtToken?.token}`,
-        },
       }
     );
 
