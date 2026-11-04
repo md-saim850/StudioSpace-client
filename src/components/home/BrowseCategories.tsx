@@ -7,7 +7,9 @@ import Empty from './Empty';
 const getCategory = async (): Promise<CategoryType[]> => {
   try {
     const res = await fetch(`${process.env.API_URL}/category?limit=6`,{
-        cache: "no-store",
+        next:{
+          revalidate:3600,
+        }
       }
     );
 

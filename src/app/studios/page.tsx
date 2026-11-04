@@ -9,7 +9,9 @@ interface PageProps {
 const getStudios = async (): Promise<StudioType[]> => {
   try {
     const res = await fetch(`${process.env.API_URL}/studios`,{
-        cache: "no-store",
+        next:{
+          revalidate:60, 
+        }
       }
     );
 

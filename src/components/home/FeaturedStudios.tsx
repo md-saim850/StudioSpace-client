@@ -7,7 +7,9 @@ import Empty from './Empty';
 const getStudios = async (): Promise<StudioType[]> => {
   try {
     const res = await fetch(`${process.env.API_URL}/studios?limit=6`,{
-        cache: "no-store",
+        next:{
+          revalidate:60,
+        }
       }
     );
 

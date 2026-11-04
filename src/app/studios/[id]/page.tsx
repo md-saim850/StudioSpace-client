@@ -15,7 +15,9 @@ async function getStudio(id: string): Promise<StudioType | null> {
   })
 
   const res = await fetch(`${process.env.API_URL}/studios/${id}`,{ 
-    cache: "no-store", 
+    next:{
+      revalidate:60,
+    },
     headers:{
       "Authorization": `Bearer ${jwtToken?.token}`
     }
