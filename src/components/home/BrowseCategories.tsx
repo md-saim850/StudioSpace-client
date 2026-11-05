@@ -1,23 +1,23 @@
-import { ArrowRight } from 'lucide-react';
 import { CategoryType } from '@/type';
-import Link from 'next/link';
 import Empty from './Empty';
 import StudioCategorySwiper from './StudioCategorySwiper';
 
-const getCategory = async (): Promise<CategoryType[]> => {
+const getCategory = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`, {
-      next: {
-        revalidate: 3600,
-      },
-    });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`,{
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch category");
+      throw new Error(`API Error: ${res.status}`);
     }
 
-    const category: CategoryType[] = await res.json();
-    return category;
+    const data: CategoryType[] = await res.json();
+
+    return data;
 
   } catch (error) {
     console.error("Error fetching category:", error);
