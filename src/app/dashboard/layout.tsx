@@ -11,13 +11,13 @@ import {
   Loader2,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
-
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout({children,}: {children: React.ReactNode}) {
   const [activeTab, setActiveTab] = useState('My Bookings');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter();
 
   const {data:session, isPending} = authClient.useSession();
 
@@ -32,7 +32,7 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
     try{
       setIsLoggingOut(true);
       await authClient.signOut();
-      redirect('/sign-in');
+      router.push('/sign-in');
 
     }catch(error){
       console.log(error);
