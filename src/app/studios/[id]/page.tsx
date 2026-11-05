@@ -14,13 +14,20 @@ async function getStudio(id: string): Promise<StudioType | null> {
     },
   });
 
-  if (res.status === 404) return null;
+  if (res.status === 404 || res.status === 204) {
+    notFound(); 
+  }
 
   if (!res.ok) {
     throw new Error("Failed to fetch studio");
   }
 
   const data = await res.json();
+
+  if(!data){
+    notFound();
+  }
+
   return data;
 }
 

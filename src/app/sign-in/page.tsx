@@ -110,10 +110,21 @@ export default function SignInPage() {
               <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                 Password
               </label>
+
+              <Link
+                href="/forgot-password"
+                className="text-xs font-semibold text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors"
+              >
+                Forgot password?
+              </Link>
             </div>
 
             <div className="relative">
-              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+              <Lock
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+              />
+
               <input
                 type="password"
                 name="password"
