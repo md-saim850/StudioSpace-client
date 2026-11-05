@@ -8,6 +8,7 @@ import {
   LogOut,
   Menu,
   X,
+  Loader2,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
@@ -16,6 +17,7 @@ import { redirect } from 'next/navigation';
 export default function DashboardLayout({children,}: {children: React.ReactNode}) {
   const [activeTab, setActiveTab] = useState('My Bookings');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const {data:session, isPending} = authClient.useSession();
 
@@ -27,8 +29,18 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
 
   
   const handleSignOut = async() =>{
-    await authClient.signOut();
-    redirect('/sign-in');
+    try{
+      setIsLoggingOut(true);
+      await authClient.signOut();
+      redirect('/sign-in');
+
+    }catch(error){
+      console.log(error);
+
+    }finally{
+      setIsLoggingOut(false);
+
+    }
   }
   return (
     <div>
@@ -98,16 +110,20 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
           </div>
 
           {/* Logout Button */}
-          <div className="pt-6 border-t border-gray-100 mt-6 dark:border-gray-800">
-            <button
-              onClick={handleSignOut}
-              type="button"
-              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
-            >
-              <LogOut className="w-4 h-4 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" />
-              Logout
-            </button>
-          </div>
+          <button
+            onClick={handleSignOut}
+            type="button"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed dark:text-gray-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+          >
+            {isLoggingOut ? (
+              <Loader2 className="w-4 h-4 animate-spin text-red-500" />
+            ) : (
+              <LogOut className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            )}
+
+            {isLoggingOut ? "Logging out..." : "Logout"}
+          </button>
+
         </aside>
 
         {/* Main Content Area */}
