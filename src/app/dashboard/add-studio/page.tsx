@@ -222,7 +222,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
           method: isEdit ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.session.token}`,
+            Authorization: `Bearer ${data.token}`,
           },
           body: JSON.stringify(studioData),
         }

@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function DeleteBtn({id}:{id:string}) {
   const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     if (deleting) return;
@@ -36,6 +38,7 @@ export default function DeleteBtn({id}:{id:string}) {
       }
 
       toast.success("Studio deleted successfully.");
+      router.refresh();
 
     } catch (error) {
       console.error("Delete studio error:", error);

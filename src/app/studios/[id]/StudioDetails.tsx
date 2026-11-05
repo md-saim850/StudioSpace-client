@@ -17,6 +17,7 @@ import Image from "next/image";
 import type{ StudioType } from "@/type";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface StudioProps {
   studio: StudioType;
@@ -27,6 +28,7 @@ export default function StudioDetails({studio}:StudioProps) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [booking, setBooking] = useState(false);
+  const router = useRouter();
 
   const validateBookingTime = () => {
     if (!date || !startTime || !endTime) {
@@ -91,8 +93,6 @@ export default function StudioDetails({studio}:StudioProps) {
         status: "Pending",
       };
 
-      console.log(bookingData);
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-booking`,{
           method: "POST",
           headers: {
@@ -104,12 +104,19 @@ export default function StudioDetails({studio}:StudioProps) {
       );
 
 
+      if(res.status === 409){
+        toast.error("This time slot is unavailable. Please select another time.");
+        return;
+      }
+
       if (!res.ok) {
         toast.error("Failed to add booking.");
         return;
       }
 
       toast.success("Studio booked successfully!");
+      router.push("/dashboard/my-booking");
+      router.refresh(); 
 
       setDate("");
       setStartTime("");
