@@ -136,17 +136,29 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`,{ 
-          cache: "no-store" 
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        console.log("API URL:", apiUrl);
+
+        const response = await fetch(`${apiUrl}/category`, {
+          cache: "no-store",
         });
 
+        console.log("Response status:", response.status);
+        console.log("Response OK:", response.ok);
+
+        const text = await response.text();
+
+        console.log("API response:", text);
+
         if (!response.ok) {
-          throw new Error("Failed to fetch categories");
+          throw new Error(`HTTP Error: ${response.status}`);
         }
 
-        const data = await response.json();
-        
+        const data = JSON.parse(text);
+
         setCategories(data);
+
       } catch (error) {
         console.error("Category fetching error:", error);
         toast.error("Unable to load categories.");
