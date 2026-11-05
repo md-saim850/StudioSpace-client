@@ -135,11 +135,8 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-        console.log("API URL:", apiUrl);
-
-        const response = await fetch(`${apiUrl}/category`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`, {
           cache: "no-store",
         });
 

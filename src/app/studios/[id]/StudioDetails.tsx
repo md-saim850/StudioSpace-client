@@ -64,15 +64,16 @@ export default function StudioDetails({studio}:StudioProps) {
     e.preventDefault();
 
     if (booking) return;
-
+    
     if (!validateBookingTime()) return;
-
+    
     setBooking(true);
-
+    
     try {
       const { data: session, error } = await authClient.token();
-
+      
       if (error || !session?.token) {
+        router.push('/sign-in')
         toast.error("Authentication failed. Please sign in again.");
         return;
       }

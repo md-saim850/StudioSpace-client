@@ -30,8 +30,6 @@ export const config = {
   matcher: [
     "/sign-in",
     "/sign-up",
-    "/studios/:id",
     "/dashboard/:path",
-
   ],
 };
