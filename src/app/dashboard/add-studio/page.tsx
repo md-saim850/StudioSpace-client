@@ -90,8 +90,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
           throw new Error("Authentication failed.");
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,
-          {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,{
             headers: {
               Authorization: `Bearer ${data.token}`,
             },
