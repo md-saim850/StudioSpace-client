@@ -6,14 +6,13 @@ import Link from 'next/link';
 import Empty from '@/components/home/Empty';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 import type{ Listing } from '@/type';
-import { API_URL } from '@/lib/config';
 
 const getMyListing = async () => {
   const jwtToken = await auth.api.getToken({
     headers: await headers(),
   })
   try {
-    const response = await fetch(`${API_URL}/my-listings`,{
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings`,{
       headers: {
         "Authorization": `Bearer ${jwtToken?.token}`
       },

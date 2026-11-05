@@ -3,7 +3,6 @@ import StudioDetails from "./StudioDetails";
 import { StudioType } from "@/type";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { API_URL } from "@/lib/config";
 
 
 interface Props {
@@ -15,7 +14,7 @@ async function getStudio(id: string): Promise<StudioType | null> {
     headers: await headers(),
   })
 
-  const res = await fetch(`${API_URL}/studios/${id}`,{ 
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`,{ 
     next:{
       revalidate:60,
     },

@@ -15,7 +15,6 @@ import {
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { CategoryType } from "@/type";
-import { API_URL } from "@/lib/config";
 
 const amenitiesList = [
   "Wi-Fi",
@@ -91,7 +90,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
           throw new Error("Authentication failed.");
         }
 
-        const response = await fetch(`${API_URL}/studios/${studioId}`,
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`,
           {
             headers: {
               Authorization: `Bearer ${data.token}`,
@@ -137,7 +136,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/category`,{ 
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`,{ 
           cache: "no-store" 
         });
 
@@ -217,8 +216,8 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
 
       const response = await fetch(
         isEdit
-          ? `${API_URL}/studios/${studioId}`
-          : `${API_URL}/add-studio`,
+          ? `${process.env.NEXT_PUBLIC_API_URL}/studios/${studioId}`
+          : `${process.env.NEXT_PUBLIC_API_URL}/add-studio`,
         {
           method: isEdit ? "PUT" : "POST",
           headers: {

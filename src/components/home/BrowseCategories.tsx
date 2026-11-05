@@ -3,11 +3,10 @@ import { CategoryType } from '@/type';
 import Link from 'next/link';
 import Empty from './Empty';
 import StudioCategorySwiper from './StudioCategorySwiper';
-import { API_URL } from '@/lib/config';
 
 const getCategory = async (): Promise<CategoryType[]> => {
   try {
-    const res = await fetch(`${API_URL}/category`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`, {
       next: {
         revalidate: 3600,
       },

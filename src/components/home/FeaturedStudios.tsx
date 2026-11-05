@@ -3,11 +3,10 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import StudiosCard from './StudiosCard';
 import Empty from './Empty';
-import { API_URL } from '@/lib/config';
 
 const getStudios = async (): Promise<StudioType[]> => {
   try {
-    const res = await fetch(`${API_URL}/studios?limit=6`,{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios?limit=6`,{
         next:{
           revalidate:60,
         }

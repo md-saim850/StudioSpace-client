@@ -6,7 +6,6 @@ import Empty from '@/components/home/Empty';
 import { CalendarDays, Clock } from 'lucide-react';
 import type{ Booking } from '@/type';
 import { headers } from 'next/headers';
-import { API_URL } from '@/lib/config';
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +15,7 @@ const getMyBooking = async () => {
       headers: await headers(),
     })
 
-    const response = await fetch(`${API_URL}/my-booking`,{
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-booking`,{
       headers:{
         "Authorization": `Bearer ${jwtToken?.token}`
       }
