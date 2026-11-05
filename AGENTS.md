@@ -22,8 +22,8 @@ Next.js 16.4.3 App Router storefront for listing/booking studios. The API is a s
 
 ## Setup
 
-- `.env` (gitignored): `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `MONGODB_URI`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `API_URL`.
-- `API_URL` is **server-only**; only `NEXT_PUBLIC_*` vars are inlined into the browser bundle. Several `'use client'` files (`add-studio`, `StudioDetails`, both `DeleteBtn`s) currently read `process.env.API_URL`, so their browser fetches compile to `undefined/...`. Give client code a `NEXT_PUBLIC_` var or move the call server-side.
+- `.env` (gitignored): `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `MONGODB_URI`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXT_PUBLIC_API_URL`.
+- `src/lib/config.ts` exports `API_URL` (from `NEXT_PUBLIC_API_URL`). Every fetch imports `API_URL` from `@/lib/config` instead of reading the env var directly. The `NEXT_PUBLIC_` prefix is required so the value is inlined into the browser bundle; changing it requires a dev-server restart/rebuild.
 - API server: run `node index.js` in `../studio-space-server` (its package.json has no start/dev script). It needs `PORT`, `MONGODB_URI`, `CLIENT_URL`; DB is `studio-space-db`.
 - `CLIENT_URL` must be this Next origin; the API verifies Bearer JWTs against `${CLIENT_URL}/api/auth/jwks`, so a wrong value yields 401 on every protected route.
 - `next/image` allows only `images.unsplash.com`. Add-studio previews use `unoptimized`, but detail/listing images do not, so a non-Unsplash `image` value from add-studio breaks those pages until the host is added to `next.config.ts`.

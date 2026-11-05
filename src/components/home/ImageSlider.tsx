@@ -14,18 +14,28 @@ import Image from 'next/image';
 const SLIDES = [
   {
     id: 1,
-    title: 'Minimalist Photo Studio',
-    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop',
+    title: 'Neon Creative Studio',
+    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop',
   },
   {
     id: 2,
-    title: 'Modern Film Production Set',
+    title: 'Vibrant RGB Lighting Stage',
     image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop',
   },
   {
     id: 3,
-    title: 'Professional Audio Studio',
+    title: 'Colorful Music & Audio Lab',
     image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    id: 4,
+    title: 'Cyberpunk Podcast & Live Suite',
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    id: 5,
+    title: 'Photo Studio',
+    image: 'https://images.unsplash.com/photo-1664817550969-5e76adc4a3fe?q=80&w=2070&auto=format&fit=crop',
   },
 ];
 
@@ -61,7 +71,7 @@ export default function ImageSlider() {
                 unoptimized
                 src={slide.image}
                 alt={slide.title}
-                className="w-full h-full object-cover grayscale contrast-105"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>

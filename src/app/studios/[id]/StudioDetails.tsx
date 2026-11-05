@@ -17,6 +17,7 @@ import Image from "next/image";
 import type{ StudioType } from "@/type";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { API_URL } from "@/lib/config";
 
 interface StudioProps {
   studio: StudioType;
@@ -93,7 +94,7 @@ export default function StudioDetails({studio}:StudioProps) {
 
       console.log(bookingData);
 
-      const res = await fetch(`${process.env.API_URL}/add-booking`,{
+      const res = await fetch(`${API_URL}/add-booking`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",

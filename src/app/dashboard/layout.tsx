@@ -5,8 +5,6 @@ import {
   Music,
   Calendar,
   Building2,
-  Heart,
-  Settings,
   LogOut,
   Menu,
   X,

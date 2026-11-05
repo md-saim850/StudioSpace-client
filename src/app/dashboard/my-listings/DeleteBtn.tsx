@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import { API_URL } from '@/lib/config';
 
 export default function DeleteBtn({id}:{id:string}) {
   const [deleting, setDeleting] = useState(false);
@@ -20,7 +21,7 @@ export default function DeleteBtn({id}:{id:string}) {
         return;
       }
 
-      const res = await fetch(`${process.env.API_URL}/delete-listings/${id}`,{
+      const res = await fetch(`${API_URL}/delete-listings/${id}`,{
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${data.token}`,

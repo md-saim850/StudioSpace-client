@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { CategoryType } from "@/type";
+import { API_URL } from "@/lib/config";
 
 const amenitiesList = [
   "Wi-Fi",
@@ -90,7 +91,7 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
           throw new Error("Authentication failed.");
         }
 
-        const response = await fetch(`${process.env.API_URL}/studios/${studioId}`,
+        const response = await fetch(`${API_URL}/studios/${studioId}`,
           {
             headers: {
               Authorization: `Bearer ${data.token}`,
@@ -136,13 +137,9 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await fetch(`${process.env.API_URL}/category`,{
-            cache: "no-store",
-            headers:{
-              "Authorization": `Bearer ${session?.session.token}`
-            }
-          }
-        );
+        const response = await fetch(`${API_URL}/category`,{ 
+          cache: "no-store" 
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
@@ -220,8 +217,8 @@ export default function AddNewStudio({ studioId }: AddNewStudioProps) {
 
       const response = await fetch(
         isEdit
-          ? `${process.env.API_URL}/studios/${studioId}`
-          : `${process.env.API_URL}/add-studio`,
+          ? `${API_URL}/studios/${studioId}`
+          : `${API_URL}/add-studio`,
         {
           method: isEdit ? "PUT" : "POST",
           headers: {

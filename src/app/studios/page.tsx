@@ -1,6 +1,7 @@
 
 import StudioFilters from "./StudioFilters";
 import type { StudioType } from "@/type"
+import { API_URL } from "@/lib/config";
 
 interface PageProps {
   searchParams: Promise<{ category?: string }>;
@@ -8,7 +9,7 @@ interface PageProps {
 
 const getStudios = async (): Promise<StudioType[]> => {
   try {
-    const res = await fetch(`${process.env.API_URL}/studios`,{
+    const res = await fetch(`${API_URL}/studios`,{
         next:{
           revalidate:60, 
         }
