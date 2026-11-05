@@ -11,7 +11,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function DashboardLayout({children,}: {children: React.ReactNode}) {
   const [activeTab, setActiveTab] = useState('My Bookings');
