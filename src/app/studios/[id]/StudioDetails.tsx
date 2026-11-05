@@ -91,7 +91,9 @@ export default function StudioDetails({studio}:StudioProps) {
         status: "Pending",
       };
 
-      const res = await fetch(`${process.env.API_URL}/add-booking/`,{
+      console.log(bookingData);
+
+      const res = await fetch(`${process.env.API_URL}/add-booking`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -101,10 +103,9 @@ export default function StudioDetails({studio}:StudioProps) {
         }
       );
 
-      const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result.message || "Failed to add booking.");
+        toast.error("Failed to add booking.");
         return;
       }
 

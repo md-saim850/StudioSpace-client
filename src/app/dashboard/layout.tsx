@@ -23,10 +23,8 @@ export default function DashboardLayout({children,}: {children: React.ReactNode}
 
   const navItems = [
     { name: 'My Bookings', icon: Calendar , link:"my-booking"},
-    { name: 'My Listings', icon: Building2, link:"my-listings"},
+    { name: 'My Studio Listings', icon: Building2, link:"my-listings"},
     { name: 'Add New Studio', icon: Music, link:"add-studio"},
-    { name: 'Favorites', icon: Heart },
-    { name: 'Profile Settings', icon: Settings },
   ];
 
   

@@ -1,10 +1,10 @@
 'use client'
 import Link from "next/link";
-import { ArrowRight, Mail, Lock, User, Camera, Loader2 } from "lucide-react";
+import { ArrowRight, Mail, Lock, User, Camera, Loader2, Image, FileImage } from "lucide-react";
 import { toast } from "sonner";
 import {authClient, signUp } from "@/lib/auth-client";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 
 const validatedPassword = (password:string, confirm_password:string) =>{
   if(password !== confirm_password){
@@ -30,6 +30,7 @@ export default function SignUpPage() {
   const[error, setError] = useState<string>("")
   const[loading, setLoading] = useState(false)
   const[googleLoading, setGoogleLoading] = useState(false)
+  const router = useRouter();
 
   const handleSubmit = async(e:React.SubmitEvent<HTMLElement>) => {
     e.preventDefault();
@@ -43,11 +44,12 @@ export default function SignUpPage() {
       const user = Object.fromEntries(formData.entries()) as {
         name:string,
         email:string,
+        image:string,
         password:string,
         confirm_password:string,
       };
   
-      const {name, email, password, confirm_password} = user;
+      const {name, email, image, password, confirm_password} = user;
 
       const res = validatedPassword(password, confirm_password);
 
@@ -61,8 +63,8 @@ export default function SignUpPage() {
       const{data, error} = await signUp.email({
         name,
         email,
+        image,
         password,
-        callbackURL:"/",
       })
 
       if(error){
@@ -70,7 +72,8 @@ export default function SignUpPage() {
         return;
       }
 
-      console.log(data);
+      router.push("/sign-in");
+      router.refresh();
   
     }catch(error){
       console.log(error);
@@ -88,7 +91,6 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL:"/",
       }); 
     } finally {
       setGoogleLoading(false);
@@ -150,6 +152,23 @@ export default function SignUpPage() {
                 name="email"
                 placeholder="name@example.com"
                 required
+                className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
+              Image URL *
+            </label>
+
+            <div className="relative">
+              <FileImage size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"/>
+              <input
+                required
+                type="url"
+                name="image"
+                placeholder="https://example.com/studio.jpg"
                 className="w-full border border-gray-200 rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none focus:border-black transition dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-white"
               />
             </div>
